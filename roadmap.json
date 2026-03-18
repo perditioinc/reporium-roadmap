@@ -1,0 +1,22 @@
+{
+  "vision": "Track every meaningful AI development tool on GitHub. 10K repos by end of March 2026. 100K by end of April 2026.",
+  "live": [
+    {"name": "reporium", "repo": "perditioinc/reporium", "description": "AI tool discovery frontend", "url": "https://reporium.com"},
+    {"name": "reporium-api", "repo": "perditioinc/reporium-api", "description": "FastAPI + PostgreSQL + pgvector"},
+    {"name": "reporium-ingestion", "repo": "perditioinc/reporium-ingestion", "description": "AI enrichment pipeline"},
+    {"name": "forksync", "repo": "perditioinc/forksync", "description": "Fork sync — 68s for 805 repos"}
+  ],
+  "in_progress": [
+    {"name": "reporium-db", "repo": "perditioinc/reporium-db", "description": "Nightly data sync — target 10K repos"},
+    {"name": "reporium-dataset", "repo": "perditioinc/reporium-dataset", "description": "Public dataset mirror"},
+    {"name": "portfolio", "repo": "perditioinc/portfolio", "description": "Personal project showcase"}
+  ],
+  "coming_next": [
+    {"name": "reporium-metrics", "description": "Platform performance tracking"},
+    {"name": "repo-intelligence", "description": "Repo quality scoring library"},
+    {"name": "reporium frontend v2", "description": "Figma-designed UI"}
+  ],
+  "backlog": [
+    {"name": "reporium enterprise", "description": "Self-hosted for internal repos"}
+  ]
+}
