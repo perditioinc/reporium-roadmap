@@ -9,13 +9,13 @@
 ### Working
 
 - [**reporium.com**](https://reporium.com) — Live — 818 repos browseable, full-text search, mobile responsive  
-  last commit: `2026-03-18` · 1 stars
+  last commit: `2026-03-19`
 - [**forksync v2**](https://github.com/perditioinc/forksync) — Cloud Run nightly sync active at 6am UTC, 818 repos tracked  
-  last commit: `2026-03-19` · 1 stars
+  last commit: `2026-03-19`
 - [**reporium-db**](https://github.com/perditioinc/reporium-db) — Nightly sync active, 818 repos tracked, 29 languages, GraphQL batch fetch  
-  last commit: `2026-03-19` · 1 stars
+  last commit: `2026-03-19`
 - [**reporium-api**](https://github.com/perditioinc/reporium-api) — Local only — 818 repos accessible via REST, cloud deployment pending  
-  last commit: `2026-03-15` · 1 stars
+  last commit: `2026-03-19`
 
 ### Not Working
 
@@ -64,7 +64,7 @@
 forksync v2 live on Cloud Run, reporium-db nightly sync active, 167 tests passing across all repos
 
 ### v0.2.0 - 2026-03-01
-reporium-ingestion pipeline built (not yet deployed to cloud), 12 AI categories defined in code
+reporium-ingestion pipeline built, AI enrichment pipeline defined but not yet running in cloud — 0 categories enriched
 
 ### v0.1.0 - 2026-01-01
 reporium.com and reporium-api first deployed
