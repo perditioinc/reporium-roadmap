@@ -8,22 +8,22 @@
         "name": "reporium.com",
         "repo": "perditioinc/reporium",
         "url": "https://reporium.com",
-        "evidence": "Live — 818 repos browseable, full-text search, mobile responsive"
+        "evidence": "Live — {db_total} repos browseable, full-text search, mobile responsive"
       },
       {
         "name": "forksync v2",
         "repo": "perditioinc/forksync",
-        "evidence": "68s for 818 repos on Cloud Run, nightly cron active at 6am UTC"
+        "evidence": "Cloud Run nightly sync active at 6am UTC, {db_total} repos tracked"
       },
       {
         "name": "reporium-db",
         "repo": "perditioinc/reporium-db",
-        "evidence": "Nightly sync active, 818 repos tracked, 29 languages, GraphQL batch fetch"
+        "evidence": "Nightly sync active, {db_total} repos tracked, {db_languages} languages, GraphQL batch fetch"
       },
       {
         "name": "reporium-api",
         "repo": "perditioinc/reporium-api",
-        "evidence": "Running locally at localhost:8000, 702 repos in DB, 571 have ai_dev_skills"
+        "evidence": "Local only — {db_total} repos accessible via REST, cloud deployment pending"
       }
     ],
     "not_working": [

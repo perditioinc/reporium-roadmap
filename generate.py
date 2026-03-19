@@ -21,6 +21,49 @@ logger = logging.getLogger(__name__)
 
 GITHUB_API = "https://api.github.com/repos"
 TIMEOUT = 15
+_DB_INDEX_URL = "https://raw.githubusercontent.com/perditioinc/reporium-db/main/data/index.json"
+
+
+async def _fetch_db_stats(token: str) -> dict[str, Any]:
+    """Fetch live stats from reporium-db index.json.
+
+    Returns:
+        Dict with db_total (int) and db_languages (int). Falls back to 0 on error.
+    """
+    headers = {"Authorization": f"Bearer {token}"} if token else {}
+    try:
+        async with httpx.AsyncClient(timeout=TIMEOUT) as client:
+            resp = await client.get(_DB_INDEX_URL, headers=headers)
+            resp.raise_for_status()
+            data = resp.json()
+        meta = data.get("meta", {})
+        return {
+            "db_total": meta.get("total", 0),
+            "db_languages": len(data.get("languages", {})),
+        }
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Failed to fetch reporium-db index: %s", exc)
+        return {"db_total": 0, "db_languages": 0}
+
+
+def _apply_context(text: str, context: dict[str, Any]) -> str:
+    """Substitute {db_total} / {db_languages} placeholders in a string."""
+    try:
+        return text.format(**context)
+    except (KeyError, ValueError):
+        return text
+
+
+def _apply_context_to_items(items: list[dict], context: dict[str, Any]) -> list[dict]:
+    """Return a copy of items with template placeholders substituted."""
+    result = []
+    for item in items:
+        copy = dict(item)
+        for field in ("evidence", "description", "reason", "notes"):
+            if field in copy and isinstance(copy[field], str):
+                copy[field] = _apply_context(copy[field], context)
+        result.append(copy)
+    return result
 
 
 def load_roadmap(path: str = "roadmap.json") -> dict[str, Any]:
@@ -380,6 +423,20 @@ async def main() -> None:
 
     roadmap = load_roadmap()
 
+    import asyncio
+
+    # Fetch live reporium-db stats for template substitution
+    context = await _fetch_db_stats(token)
+
+    # Apply live context to all text fields that contain placeholders
+    state = roadmap.get("current_state", {})
+    if state:
+        roadmap = dict(roadmap)
+        roadmap["current_state"] = {
+            "working": _apply_context_to_items(state.get("working", []), context),
+            "not_working": _apply_context_to_items(state.get("not_working", []), context),
+        }
+
     # Collect all repos that have a 'repo' field across all sections
     all_items: list[dict] = []
     state = roadmap.get("current_state", {})
@@ -390,9 +447,7 @@ async def main() -> None:
     all_items += roadmap.get("in_progress", [])
     repos = list({item["repo"] for item in all_items if item.get("repo")})
 
-    # Fetch stats concurrently
-    import asyncio
-
+    # Fetch GitHub stats concurrently
     sem = asyncio.Semaphore(5)
 
     async def _with_sem(repo: str) -> tuple[str, Optional[dict]]:

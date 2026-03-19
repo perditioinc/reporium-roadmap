@@ -8,11 +8,16 @@ import httpx
 import respx
 
 from generate import (
+    _apply_context,
+    _apply_context_to_items,
+    _fetch_db_stats,
     _fetch_repo_stats,
     _format_item,
     build_readme,
     load_roadmap,
 )
+
+_DB_INDEX_URL = "https://raw.githubusercontent.com/perditioinc/reporium-db/main/data/index.json"
 
 GITHUB_API = "https://api.github.com/repos"
 
@@ -183,3 +188,62 @@ def test_build_readme_new_structure_has_changelog(new_roadmap):
     readme = build_readme(new_roadmap, {}, "2026-03-18")
     assert "## Changelog" in readme
     assert "v0.3.0" in readme
+
+
+# ── _apply_context / _apply_context_to_items ─────────────────────────────────
+
+
+def test_apply_context_substitutes_placeholders():
+    """Replaces {db_total} and {db_languages} in a string."""
+    result = _apply_context("{db_total} repos, {db_languages} languages", {"db_total": 818, "db_languages": 29})
+    assert result == "818 repos, 29 languages"
+
+
+def test_apply_context_unknown_placeholder_passthrough():
+    """Unknown placeholders leave the string unchanged."""
+    result = _apply_context("no placeholders here", {"db_total": 818})
+    assert result == "no placeholders here"
+
+
+def test_apply_context_to_items_substitutes_evidence():
+    """Substitutes placeholders in evidence fields across a list of items."""
+    items = [
+        {"name": "reporium-db", "evidence": "Tracking {db_total} repos, {db_languages} languages"},
+        {"name": "other", "evidence": "No placeholders"},
+    ]
+    result = _apply_context_to_items(items, {"db_total": 818, "db_languages": 29})
+    assert result[0]["evidence"] == "Tracking 818 repos, 29 languages"
+    assert result[1]["evidence"] == "No placeholders"
+
+
+def test_apply_context_to_items_does_not_mutate_original():
+    """Original items list is not mutated."""
+    items = [{"name": "x", "evidence": "{db_total} repos"}]
+    _apply_context_to_items(items, {"db_total": 999})
+    assert items[0]["evidence"] == "{db_total} repos"
+
+
+# ── _fetch_db_stats ───────────────────────────────────────────────────────────
+
+
+@respx.mock
+async def test_fetch_db_stats_returns_total_and_languages():
+    """Extracts db_total and db_languages from index.json."""
+    payload = {
+        "meta": {"total": 818, "last_updated": "2026-03-19T06:00:00Z"},
+        "languages": {"Python": 314, "TypeScript": 112, "Go": 37},
+        "categories": {},
+    }
+    respx.get(_DB_INDEX_URL).mock(return_value=httpx.Response(200, json=payload))
+    result = await _fetch_db_stats("tok")
+    assert result["db_total"] == 818
+    assert result["db_languages"] == 3
+
+
+@respx.mock
+async def test_fetch_db_stats_returns_zeros_on_error():
+    """Returns zeros gracefully when the index fetch fails."""
+    respx.get(_DB_INDEX_URL).mock(side_effect=httpx.ConnectError("refused"))
+    result = await _fetch_db_stats("tok")
+    assert result["db_total"] == 0
+    assert result["db_languages"] == 0
