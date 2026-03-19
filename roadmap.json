@@ -100,7 +100,7 @@
     {
       "version": "v0.2.0",
       "date": "2026-03-01",
-      "notes": "reporium-ingestion pipeline built (not yet deployed to cloud), 12 AI categories defined in code"
+      "notes": "reporium-ingestion pipeline built, AI enrichment pipeline defined but not yet running in cloud — 0 categories enriched"
     },
     {
       "version": "v0.1.0",

@@ -290,8 +290,7 @@ def _current_state_section(roadmap: dict, stats_map: dict[str, Optional[dict]]) 
 
             if stats and stats.get("exists", True):
                 last = stats.get("last_commit") or "—"
-                stars = stats.get("stars", 0)
-                stat_str = f"last commit: `{last}` · {stars} stars"
+                stat_str = f"last commit: `{last}`"
             else:
                 stat_str = ""
 
