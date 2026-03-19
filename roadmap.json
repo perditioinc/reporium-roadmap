@@ -1,22 +1,87 @@
 {
   "vision": "Track every meaningful AI development tool on GitHub. 10K repos by end of March 2026. 100K by end of April 2026.",
+  "version": "v0.3.0",
   "live": [
-    {"name": "reporium", "repo": "perditioinc/reporium", "description": "AI tool discovery frontend", "url": "https://reporium.com"},
-    {"name": "reporium-api", "repo": "perditioinc/reporium-api", "description": "FastAPI + PostgreSQL + pgvector"},
-    {"name": "reporium-ingestion", "repo": "perditioinc/reporium-ingestion", "description": "AI enrichment pipeline"},
-    {"name": "forksync", "repo": "perditioinc/forksync", "description": "Fork sync — 68s for 805 repos"}
+    {
+      "name": "reporium",
+      "version": "v1.0.0",
+      "repo": "perditioinc/reporium",
+      "description": "AI tool discovery frontend: full-text search, category filtering, static JSON serving, mobile responsive",
+      "url": "https://reporium.com",
+      "features": ["Full-text search", "Category filtering", "Static JSON serving", "Mobile responsive"]
+    },
+    {
+      "name": "reporium-api",
+      "version": "v1.0.0",
+      "repo": "perditioinc/reporium-api",
+      "description": "FastAPI + PostgreSQL + pgvector: 702 repos queryable, Redis caching",
+      "features": ["FastAPI", "PostgreSQL + pgvector", "702 repos queryable", "Redis caching"]
+    },
+    {
+      "name": "reporium-ingestion",
+      "version": "v1.0.0",
+      "repo": "perditioinc/reporium-ingestion",
+      "description": "AI enrichment pipeline: Ollama local AI, four-tier cache, nightly batch, 12 categories",
+      "features": ["Ollama local AI", "Four-tier cache", "Nightly batch", "12 categories"]
+    },
+    {
+      "name": "forksync",
+      "version": "v2.0.0",
+      "repo": "perditioinc/forksync",
+      "description": "68s for 805 repos: 50 concurrent calls, Cloud Run + Redis + VPC, smart scheduling, 91% faster than v1",
+      "features": ["50 concurrent calls", "Cloud Run + Redis + VPC", "Smart scheduling", "91% faster than v1"]
+    }
   ],
   "in_progress": [
-    {"name": "reporium-db", "repo": "perditioinc/reporium-db", "description": "Nightly data sync — target 10K repos"},
-    {"name": "reporium-dataset", "repo": "perditioinc/reporium-dataset", "description": "Public dataset mirror"},
-    {"name": "portfolio", "repo": "perditioinc/portfolio", "description": "Personal project showcase"}
+    {
+      "name": "reporium-db",
+      "repo": "perditioinc/reporium-db",
+      "description": "GraphQL batch fetch, schedule tiers, checkpoint/resume, partitioned JSON: target 10K repos"
+    },
+    {
+      "name": "reporium-dataset",
+      "repo": "perditioinc/reporium-dataset",
+      "description": "Nightly auto-generated README, top repos table, freshness indicator, public dataset mirror"
+    },
+    {
+      "name": "portfolio",
+      "repo": "perditioinc/portfolio",
+      "description": "Real metrics from live sources, auto-updates nightly, link to live products"
+    },
+    {
+      "name": "reporium-roadmap",
+      "repo": "perditioinc/reporium-roadmap",
+      "description": "This file: live commit dates, feature tracking, version history"
+    },
+    {
+      "name": "reporium-metrics",
+      "repo": "perditioinc/reporium-metrics",
+      "description": "Nightly collection, ASCII trend charts, milestone tracking"
+    }
   ],
   "coming_next": [
-    {"name": "reporium-metrics", "description": "Platform performance tracking"},
-    {"name": "repo-intelligence", "description": "Repo quality scoring library"},
-    {"name": "reporium frontend v2", "description": "Figma-designed UI"}
+    {
+      "name": "repo-intelligence",
+      "repo": "perditioinc/repo-intelligence",
+      "description": "0-100 repo scorer: README, activity, community, CI. Pip-installable."
+    },
+    {
+      "name": "reporium frontend v2",
+      "description": "Figma-designed UI: faster, cleaner, better filtering"
+    },
+    {
+      "name": "reporium enterprise",
+      "description": "Self-hosted for internal repos"
+    }
   ],
   "backlog": [
-    {"name": "reporium enterprise", "description": "Self-hosted for internal repos"}
+    {
+      "name": "reporium observability",
+      "description": "Latency dashboards, error rate tracking, SLO definitions"
+    },
+    {
+      "name": "public API v2",
+      "description": "Rate-limited public REST API with API keys"
+    }
   ]
 }

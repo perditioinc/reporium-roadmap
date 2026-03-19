@@ -32,7 +32,7 @@ def load_roadmap(path: str = "roadmap.json") -> dict[str, Any]:
     Returns:
         Parsed roadmap dict.
     """
-    return json.loads(open(path).read())
+    return json.loads(open(path, encoding="utf-8").read())
 
 
 async def _fetch_repo_stats(token: str, owner_repo: str) -> Optional[dict[str, Any]]:
@@ -72,23 +72,27 @@ def _format_item(item: dict, stats: Optional[dict]) -> str:
     """Format a single roadmap item as a markdown list entry.
 
     Args:
-        item: Roadmap item dict (name, description, optional repo/url).
+        item: Roadmap item dict (name, description, optional repo/url/version/features).
         stats: Live GitHub stats dict or None.
 
     Returns:
         Markdown list item string.
     """
     name = item["name"]
+    version = item.get("version", "")
     description = item.get("description", "")
     url = item.get("url", "")
     repo = item.get("repo", "")
+    features = item.get("features", [])
+
+    name_with_version = f"{name} {version}" if version else name
 
     if url:
-        label = f"[**{name}**]({url})"
+        label = f"[**{name_with_version}**]({url})"
     elif repo:
-        label = f"[**{name}**](https://github.com/{repo})"
+        label = f"[**{name_with_version}**](https://github.com/{repo})"
     else:
-        label = f"**{name}**"
+        label = f"**{name_with_version}**"
 
     if stats is None:
         status_str = "_(data unavailable)_"
@@ -98,9 +102,14 @@ def _format_item(item: dict, stats: Optional[dict]) -> str:
         last = stats.get("last_commit") or "—"
         stars = stats.get("stars", 0)
         issues = stats.get("open_issues", 0)
-        status_str = f"last commit: `{last}` · ⭐ {stars} · {issues} open issues"
+        status_str = f"last commit: `{last}` · {stars} stars · {issues} open issues"
 
-    return f"- {label} — {description}  \n  {status_str}"
+    lines = [f"- {label} — {description}  \n  {status_str}"]
+    if features:
+        feature_str = " · ".join(features)
+        lines.append(f"  _{feature_str}_")
+
+    return "\n".join(lines)
 
 
 def _section(title: str, items: list[dict], stats_map: dict[str, Optional[dict]]) -> str:
@@ -135,9 +144,28 @@ def _plain_section(title: str, items: list[dict]) -> str:
     lines = [f"## {title}", ""]
     for item in items:
         name = item["name"]
+        repo = item.get("repo", "")
         description = item.get("description", "")
-        lines.append(f"- **{name}** — {description}")
+        if repo:
+            label = f"[**{name}**](https://github.com/{repo})"
+        else:
+            label = f"**{name}**"
+        lines.append(f"- {label} — {description}")
     return "\n".join(lines)
+
+
+def _changelog_section() -> str:
+    """Read and include CHANGELOG.md content.
+
+    Returns:
+        Markdown changelog section string.
+    """
+    path = "CHANGELOG.md"
+    try:
+        content = open(path, encoding="utf-8").read()
+        return "## Changelog\n\n" + content
+    except Exception:  # noqa: BLE001
+        return ""
 
 
 def build_readme(roadmap: dict, stats_map: dict[str, Optional[dict]], generated_at: str) -> str:
@@ -152,10 +180,14 @@ def build_readme(roadmap: dict, stats_map: dict[str, Optional[dict]], generated_
         Complete README.md markdown string.
     """
     vision = roadmap.get("vision", "")
+    platform_version = roadmap.get("version", "")
     live_section = _section("Live", roadmap.get("live", []), stats_map)
     in_progress_section = _section("In Progress", roadmap.get("in_progress", []), stats_map)
     coming_next_section = _plain_section("Coming Next", roadmap.get("coming_next", []))
     backlog_section = _plain_section("Backlog", roadmap.get("backlog", []))
+    changelog = _changelog_section()
+
+    version_line = f"Platform **{platform_version}** · " if platform_version else ""
 
     return f"""# Reporium Roadmap
 
@@ -179,9 +211,11 @@ def build_readme(roadmap: dict, stats_map: dict[str, Optional[dict]], generated_
 
 ---
 
-*Last updated: {generated_at}*
+{changelog}
 
-See [CHANGELOG.md](CHANGELOG.md) for version history.
+---
+
+*{version_line}Last updated: {generated_at[:10]} · See [CHANGELOG.md](CHANGELOG.md) for version history.*
 """
 
 
@@ -216,7 +250,7 @@ async def main() -> None:
     generated_at = datetime.now(timezone.utc).isoformat()
     readme = build_readme(roadmap, stats_map, generated_at)
 
-    with open("README.md", "w") as f:
+    with open("README.md", "w", encoding="utf-8") as f:
         f.write(readme)
 
     elapsed = time.monotonic() - t0
