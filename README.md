@@ -25,14 +25,19 @@
 
 - [**reporium-db**](https://github.com/perditioinc/reporium-db) — GraphQL batch fetch, schedule tiers, checkpoint/resume, partitioned JSON: target 10K repos  
   last commit: `2026-03-19` · 1 stars · 0 open issues
+  _GraphQL pagination · Nightly/weekly/monthly tiers · Checkpoint/resume · Partitioned JSON output_
 - [**reporium-dataset**](https://github.com/perditioinc/reporium-dataset) — Nightly auto-generated README, top repos table, freshness indicator, public dataset mirror  
   last commit: `2026-03-19` · 1 stars · 0 open issues
+  _Nightly auto-generated README · Top repos by stars · Language breakdown · 12 AI categories_
 - [**portfolio**](https://github.com/perditioinc/portfolio) — Real metrics from live sources, auto-updates nightly, link to live products  
   last commit: `2026-03-19` · 1 stars · 0 open issues
+  _Live GitHub API data · Metrics from forksync + reporium-db · Nightly auto-update_
 - [**reporium-roadmap**](https://github.com/perditioinc/reporium-roadmap) — This file: live commit dates, feature tracking, version history  
   last commit: `2026-03-19` · 1 stars · 0 open issues
+  _Live GitHub commit dates · Version numbers · Feature lists · Changelog_
 - [**reporium-metrics**](https://github.com/perditioinc/reporium-metrics) — Nightly collection, ASCII trend charts, milestone tracking  
   last commit: `2026-03-19` · 1 stars · 0 open issues
+  _Nightly collection · ASCII trend charts · Milestone tracking · 91% improvement logged_
 
 ---
 

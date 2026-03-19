@@ -36,27 +36,32 @@
     {
       "name": "reporium-db",
       "repo": "perditioinc/reporium-db",
-      "description": "GraphQL batch fetch, schedule tiers, checkpoint/resume, partitioned JSON: target 10K repos"
+      "description": "GraphQL batch fetch, schedule tiers, checkpoint/resume, partitioned JSON: target 10K repos",
+      "features": ["GraphQL pagination", "Nightly/weekly/monthly tiers", "Checkpoint/resume", "Partitioned JSON output"]
     },
     {
       "name": "reporium-dataset",
       "repo": "perditioinc/reporium-dataset",
-      "description": "Nightly auto-generated README, top repos table, freshness indicator, public dataset mirror"
+      "description": "Nightly auto-generated README, top repos table, freshness indicator, public dataset mirror",
+      "features": ["Nightly auto-generated README", "Top repos by stars", "Language breakdown", "12 AI categories"]
     },
     {
       "name": "portfolio",
       "repo": "perditioinc/portfolio",
-      "description": "Real metrics from live sources, auto-updates nightly, link to live products"
+      "description": "Real metrics from live sources, auto-updates nightly, link to live products",
+      "features": ["Live GitHub API data", "Metrics from forksync + reporium-db", "Nightly auto-update"]
     },
     {
       "name": "reporium-roadmap",
       "repo": "perditioinc/reporium-roadmap",
-      "description": "This file: live commit dates, feature tracking, version history"
+      "description": "This file: live commit dates, feature tracking, version history",
+      "features": ["Live GitHub commit dates", "Version numbers", "Feature lists", "Changelog"]
     },
     {
       "name": "reporium-metrics",
       "repo": "perditioinc/reporium-metrics",
-      "description": "Nightly collection, ASCII trend charts, milestone tracking"
+      "description": "Nightly collection, ASCII trend charts, milestone tracking",
+      "features": ["Nightly collection", "ASCII trend charts", "Milestone tracking", "91% improvement logged"]
     }
   ],
   "coming_next": [
