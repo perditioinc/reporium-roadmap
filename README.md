@@ -60,11 +60,11 @@
 
 ## Changelog
 
-### v0.3.0 - 2026-03-18
-6 new repos built, forksync v2 live, reporium-db nightly sync active, 147 tests passing
+### v0.3.0 - 2026-03-19
+forksync v2 live on Cloud Run, reporium-db nightly sync active, 167 tests passing across all repos
 
 ### v0.2.0 - 2026-03-01
-reporium-ingestion pipeline built, 12 AI categories defined
+reporium-ingestion pipeline built (not yet deployed to cloud), 12 AI categories defined in code
 
 ### v0.1.0 - 2026-01-01
 reporium.com and reporium-api first deployed
