@@ -1,69 +1,81 @@
 {
   "vision": "Track every meaningful AI development tool on GitHub. 10K repos by end of March 2026. 100K by end of April 2026.",
   "version": "v0.3.0",
-  "live": [
+  "as_of": "2026-03-18",
+  "current_state": {
+    "working": [
+      {
+        "name": "reporium.com",
+        "repo": "perditioinc/reporium",
+        "url": "https://reporium.com",
+        "evidence": "Live — 818 repos browseable, full-text search, mobile responsive"
+      },
+      {
+        "name": "forksync v2",
+        "repo": "perditioinc/forksync",
+        "evidence": "68s for 818 repos on Cloud Run, nightly cron active at 6am UTC"
+      },
+      {
+        "name": "reporium-db",
+        "repo": "perditioinc/reporium-db",
+        "evidence": "Nightly sync active, 818 repos tracked, 29 languages, GraphQL batch fetch"
+      },
+      {
+        "name": "reporium-api",
+        "repo": "perditioinc/reporium-api",
+        "evidence": "Running locally at localhost:8000, 702 repos in DB, 571 have ai_dev_skills"
+      }
+    ],
+    "not_working": [
+      {
+        "name": "reporium-ingestion",
+        "repo": "perditioinc/reporium-ingestion",
+        "reason": "Pipeline not running in cloud — 0 categories enriched, 0 readme summaries"
+      },
+      {
+        "name": "reporium-api cloud deployment",
+        "reason": "Local only — no public endpoint, not deployed to GCP"
+      },
+      {
+        "name": "forksync SYNC_REPORT.md",
+        "reason": "v2 on Cloud Run does not write SYNC_REPORT.md back to GitHub (workflow fix deployed, pending next nightly run)"
+      },
+      {
+        "name": "AI categories",
+        "reason": "Only 'tooling' exists in reporium-db — real AI categorization requires ingestion pipeline"
+      }
+    ]
+  },
+  "fixing_now": [
     {
-      "name": "reporium",
-      "version": "v1.0.0",
-      "repo": "perditioinc/reporium",
-      "description": "AI tool discovery frontend: full-text search, category filtering, static JSON serving, mobile responsive",
-      "url": "https://reporium.com",
-      "features": ["Full-text search", "Category filtering", "Static JSON serving", "Mobile responsive"]
+      "name": "forksync SYNC_REPORT.md",
+      "description": "Nightly workflow now captures Cloud Run output and commits SYNC_REPORT.md — unblocks metrics and portfolio"
     },
     {
-      "name": "reporium-api",
-      "version": "v1.0.0",
-      "repo": "perditioinc/reporium-api",
-      "description": "FastAPI + PostgreSQL + pgvector: 702 repos queryable, Redis caching",
-      "features": ["FastAPI", "PostgreSQL + pgvector", "702 repos queryable", "Redis caching"]
+      "name": "reporium-ingestion pipeline",
+      "description": "Fix cloud deployment — unblocks categories, summaries, reporium.com usefulness"
     },
     {
-      "name": "reporium-ingestion",
-      "version": "v1.0.0",
-      "repo": "perditioinc/reporium-ingestion",
-      "description": "AI enrichment pipeline: Ollama local AI, four-tier cache, nightly batch, 12 categories",
-      "features": ["Ollama local AI", "Four-tier cache", "Nightly batch", "12 categories"]
-    },
-    {
-      "name": "forksync",
-      "version": "v2.0.0",
-      "repo": "perditioinc/forksync",
-      "description": "68s for 805 repos: 50 concurrent calls, Cloud Run + Redis + VPC, smart scheduling, 91% faster than v1",
-      "features": ["50 concurrent calls", "Cloud Run + Redis + VPC", "Smart scheduling", "91% faster than v1"]
+      "name": "reporium-api cloud deployment",
+      "description": "Deploy to GCP — unblocks public read endpoint"
     }
   ],
-  "in_progress": [
-    {
-      "name": "reporium-db",
-      "repo": "perditioinc/reporium-db",
-      "description": "GraphQL batch fetch, schedule tiers, checkpoint/resume, partitioned JSON: target 10K repos",
-      "features": ["GraphQL pagination", "Nightly/weekly/monthly tiers", "Checkpoint/resume", "Partitioned JSON output"]
-    },
-    {
-      "name": "reporium-dataset",
-      "repo": "perditioinc/reporium-dataset",
-      "description": "Nightly auto-generated README, top repos table, freshness indicator, public dataset mirror",
-      "features": ["Nightly auto-generated README", "Top repos by stars", "Language breakdown", "12 AI categories"]
-    },
-    {
-      "name": "portfolio",
-      "repo": "perditioinc/portfolio",
-      "description": "Real metrics from live sources, auto-updates nightly, link to live products",
-      "features": ["Live GitHub API data", "Metrics from forksync + reporium-db", "Nightly auto-update"]
-    },
-    {
-      "name": "reporium-roadmap",
-      "repo": "perditioinc/reporium-roadmap",
-      "description": "This file: live commit dates, feature tracking, version history",
-      "features": ["Live GitHub commit dates", "Version numbers", "Feature lists", "Changelog"]
-    },
-    {
-      "name": "reporium-metrics",
-      "repo": "perditioinc/reporium-metrics",
-      "description": "Nightly collection, ASCII trend charts, milestone tracking",
-      "features": ["Nightly collection", "ASCII trend charts", "Milestone tracking", "91% improvement logged"]
-    }
-  ],
+  "next_up": {
+    "deadline": "end of March 2026",
+    "items": [
+      "10K repos tracked in reporium-db",
+      "Categories working (requires ingestion pipeline fix)",
+      "reporium-api deployed to cloud with public read endpoint"
+    ]
+  },
+  "future": {
+    "deadline": "end of April 2026",
+    "items": [
+      "100K repos tracked",
+      "repo-intelligence library live on PyPI",
+      "reporium frontend v2 (Figma-designed)"
+    ]
+  },
   "coming_next": [
     {
       "name": "repo-intelligence",
@@ -79,14 +91,21 @@
       "description": "Self-hosted for internal repos"
     }
   ],
-  "backlog": [
+  "changelog": [
     {
-      "name": "reporium observability",
-      "description": "Latency dashboards, error rate tracking, SLO definitions"
+      "version": "v0.3.0",
+      "date": "2026-03-18",
+      "notes": "6 new repos built, forksync v2 live, reporium-db nightly sync active, 147 tests passing"
     },
     {
-      "name": "public API v2",
-      "description": "Rate-limited public REST API with API keys"
+      "version": "v0.2.0",
+      "date": "2026-03-01",
+      "notes": "reporium-ingestion pipeline built, 12 AI categories defined"
+    },
+    {
+      "version": "v0.1.0",
+      "date": "2026-01-01",
+      "notes": "reporium.com and reporium-api first deployed"
     }
   ]
 }

@@ -168,8 +168,116 @@ def _changelog_section() -> str:
         return ""
 
 
+def _current_state_section(roadmap: dict, stats_map: dict[str, Optional[dict]]) -> str:
+    """Render the current state section with working / not working subsections.
+
+    Args:
+        roadmap: Parsed roadmap.json dict.
+        stats_map: Mapping of owner/repo → GitHub stats.
+
+    Returns:
+        Markdown section string.
+    """
+    state = roadmap.get("current_state", {})
+    working = state.get("working", [])
+    not_working = state.get("not_working", [])
+
+    lines = ["## Current State", ""]
+
+    if working:
+        lines.append("### Working")
+        lines.append("")
+        for item in working:
+            repo = item.get("repo", "")
+            name = item["name"]
+            evidence = item.get("evidence", "")
+            url = item.get("url", "")
+            stats = stats_map.get(repo)
+
+            if url:
+                label = f"[**{name}**]({url})"
+            elif repo:
+                label = f"[**{name}**](https://github.com/{repo})"
+            else:
+                label = f"**{name}**"
+
+            if stats and stats.get("exists", True):
+                last = stats.get("last_commit") or "—"
+                stars = stats.get("stars", 0)
+                stat_str = f"last commit: `{last}` · {stars} stars"
+            else:
+                stat_str = ""
+
+            stat_suffix = f"  \n  {stat_str}" if stat_str else ""
+            lines.append(f"- {label} — {evidence}{stat_suffix}")
+        lines.append("")
+
+    if not_working:
+        lines.append("### Not Working")
+        lines.append("")
+        for item in not_working:
+            name = item["name"]
+            reason = item.get("reason", "")
+            repo = item.get("repo", "")
+            if repo:
+                label = f"[**{name}**](https://github.com/{repo})"
+            else:
+                label = f"**{name}**"
+            lines.append(f"- {label} — {reason}")
+
+    return "\n".join(lines)
+
+
+def _fixing_now_section(items: list[dict]) -> str:
+    """Render the 'Fixing Now' section."""
+    lines = ["## Fixing Now", ""]
+    for item in items:
+        name = item["name"]
+        description = item.get("description", "")
+        lines.append(f"- **{name}** — {description}")
+    return "\n".join(lines)
+
+
+def _next_up_section(data: dict) -> str:
+    """Render the 'Next Up' section with deadline."""
+    deadline = data.get("deadline", "")
+    items = data.get("items", [])
+    lines = [f"## Next Up — {deadline}" if deadline else "## Next Up", ""]
+    for item in items:
+        lines.append(f"- {item}")
+    return "\n".join(lines)
+
+
+def _future_section(data: dict) -> str:
+    """Render the 'Target' section."""
+    deadline = data.get("deadline", "")
+    items = data.get("items", [])
+    lines = [f"## Target: {deadline}" if deadline else "## Future", ""]
+    for item in items:
+        lines.append(f"- {item}")
+    return "\n".join(lines)
+
+
+def _changelog_from_roadmap(changelog: list[dict]) -> str:
+    """Render changelog from roadmap.json entries."""
+    if not changelog:
+        return _changelog_section()
+    lines = ["## Changelog", ""]
+    for entry in changelog:
+        version = entry.get("version", "")
+        date = entry.get("date", "")
+        notes = entry.get("notes", "")
+        lines.append(f"### {version} - {date}")
+        lines.append(f"{notes}")
+        lines.append("")
+    return "\n".join(lines)
+
+
 def build_readme(roadmap: dict, stats_map: dict[str, Optional[dict]], generated_at: str) -> str:
     """Assemble the full README from roadmap data and live stats.
+
+    Supports both the new structure (current_state, fixing_now, next_up, future)
+    and the legacy structure (live, in_progress, coming_next, backlog).
 
     Args:
         roadmap: Parsed roadmap.json dict.
@@ -181,13 +289,56 @@ def build_readme(roadmap: dict, stats_map: dict[str, Optional[dict]], generated_
     """
     vision = roadmap.get("vision", "")
     platform_version = roadmap.get("version", "")
+    version_line = f"Platform **{platform_version}** · " if platform_version else ""
+
+    # New structure
+    if "current_state" in roadmap:
+        current = _current_state_section(roadmap, stats_map)
+        fixing = _fixing_now_section(roadmap.get("fixing_now", []))
+        next_up = _next_up_section(roadmap.get("next_up", {}))
+        future = _future_section(roadmap.get("future", {}))
+        coming = _plain_section("Coming Next", roadmap.get("coming_next", []))
+        changelog = _changelog_from_roadmap(roadmap.get("changelog", []))
+
+        return f"""# Reporium Roadmap
+
+> {vision}
+
+---
+
+{current}
+
+---
+
+{fixing}
+
+---
+
+{next_up}
+
+---
+
+{future}
+
+---
+
+{coming}
+
+---
+
+{changelog}
+
+---
+
+*{version_line}Last updated: {generated_at[:10]} · See [CHANGELOG.md](CHANGELOG.md) for version history.*
+"""
+
+    # Legacy structure (live, in_progress, coming_next, backlog)
     live_section = _section("Live", roadmap.get("live", []), stats_map)
     in_progress_section = _section("In Progress", roadmap.get("in_progress", []), stats_map)
     coming_next_section = _plain_section("Coming Next", roadmap.get("coming_next", []))
     backlog_section = _plain_section("Backlog", roadmap.get("backlog", []))
     changelog = _changelog_section()
-
-    version_line = f"Platform **{platform_version}** · " if platform_version else ""
 
     return f"""# Reporium Roadmap
 
@@ -229,17 +380,22 @@ async def main() -> None:
 
     roadmap = load_roadmap()
 
-    # Collect all repos that have a 'repo' field
-    all_items = roadmap.get("live", []) + roadmap.get("in_progress", [])
-    repos = [item["repo"] for item in all_items if item.get("repo")]
+    # Collect all repos that have a 'repo' field across all sections
+    all_items: list[dict] = []
+    state = roadmap.get("current_state", {})
+    all_items += state.get("working", [])
+    all_items += state.get("not_working", [])
+    all_items += roadmap.get("fixing_now", [])
+    all_items += roadmap.get("live", [])
+    all_items += roadmap.get("in_progress", [])
+    repos = list({item["repo"] for item in all_items if item.get("repo")})
 
-    # Fetch stats concurrently (with simple semaphore for courtesy)
+    # Fetch stats concurrently
     import asyncio
 
     sem = asyncio.Semaphore(5)
 
     async def _with_sem(repo: str) -> tuple[str, Optional[dict]]:
-        """Fetch stats for one repo under semaphore."""
         async with sem:
             stats = await _fetch_repo_stats(token, repo)
         return repo, stats

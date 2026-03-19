@@ -107,11 +107,11 @@ def test_format_item_with_url():
     assert "reporium.com" in result
 
 
-# ── build_readme ──────────────────────────────────────────────────────────────
+# ── build_readme (legacy structure) ──────────────────────────────────────────
 
 
 def test_build_readme_has_all_sections(sample_roadmap, sample_stats):
-    """README contains all four section headings."""
+    """Legacy README contains all four section headings."""
     stats_map = {
         "perditioinc/reporium": sample_stats,
         "perditioinc/reporium-db": sample_stats,
@@ -152,3 +152,34 @@ def test_build_readme_has_changelog_link(sample_roadmap):
     """README links to CHANGELOG.md."""
     readme = build_readme(sample_roadmap, {}, "2026-03-17")
     assert "CHANGELOG.md" in readme
+
+
+# ── build_readme (new current_state structure) ───────────────────────────────
+
+
+def test_build_readme_new_structure_has_current_state(new_roadmap):
+    """New structure README contains Current State section."""
+    readme = build_readme(new_roadmap, {}, "2026-03-18")
+    assert "## Current State" in readme
+    assert "### Working" in readme
+    assert "### Not Working" in readme
+
+
+def test_build_readme_new_structure_shows_honest_status(new_roadmap):
+    """New structure README shows what is not working."""
+    readme = build_readme(new_roadmap, {}, "2026-03-18")
+    assert "ingestion" in readme.lower()
+    assert "## Fixing Now" in readme
+
+
+def test_build_readme_new_structure_has_deadline(new_roadmap):
+    """New structure README shows next_up with deadline."""
+    readme = build_readme(new_roadmap, {}, "2026-03-18")
+    assert "March" in readme
+
+
+def test_build_readme_new_structure_has_changelog(new_roadmap):
+    """New structure README contains changelog entries."""
+    readme = build_readme(new_roadmap, {}, "2026-03-18")
+    assert "## Changelog" in readme
+    assert "v0.3.0" in readme

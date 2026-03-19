@@ -4,40 +4,49 @@
 
 ---
 
-## Live
+## Current State
 
-- [**reporium v1.0.0**](https://reporium.com) — AI tool discovery frontend: full-text search, category filtering, static JSON serving, mobile responsive  
-  last commit: `2026-03-18` · 1 stars · 0 open issues
-  _Full-text search · Category filtering · Static JSON serving · Mobile responsive_
-- [**reporium-api v1.0.0**](https://github.com/perditioinc/reporium-api) — FastAPI + PostgreSQL + pgvector: 702 repos queryable, Redis caching  
-  last commit: `2026-03-15` · 1 stars · 0 open issues
-  _FastAPI · PostgreSQL + pgvector · 702 repos queryable · Redis caching_
-- [**reporium-ingestion v1.0.0**](https://github.com/perditioinc/reporium-ingestion) — AI enrichment pipeline: Ollama local AI, four-tier cache, nightly batch, 12 categories  
-  last commit: `2026-03-16` · 1 stars · 0 open issues
-  _Ollama local AI · Four-tier cache · Nightly batch · 12 categories_
-- [**forksync v2.0.0**](https://github.com/perditioinc/forksync) — 68s for 805 repos: 50 concurrent calls, Cloud Run + Redis + VPC, smart scheduling, 91% faster than v1  
-  last commit: `2026-03-17` · 1 stars · 0 open issues
-  _50 concurrent calls · Cloud Run + Redis + VPC · Smart scheduling · 91% faster than v1_
+### Working
+
+- [**reporium.com**](https://reporium.com) — Live — 818 repos browseable, full-text search, mobile responsive  
+  last commit: `2026-03-18` · 1 stars
+- [**forksync v2**](https://github.com/perditioinc/forksync) — 68s for 818 repos on Cloud Run, nightly cron active at 6am UTC  
+  last commit: `2026-03-17` · 1 stars
+- [**reporium-db**](https://github.com/perditioinc/reporium-db) — Nightly sync active, 818 repos tracked, 29 languages, GraphQL batch fetch  
+  last commit: `2026-03-19` · 1 stars
+- [**reporium-api**](https://github.com/perditioinc/reporium-api) — Running locally at localhost:8000, 702 repos in DB, 571 have ai_dev_skills  
+  last commit: `2026-03-15` · 1 stars
+
+### Not Working
+
+- [**reporium-ingestion**](https://github.com/perditioinc/reporium-ingestion) — Pipeline not running in cloud — 0 categories enriched, 0 readme summaries
+- **reporium-api cloud deployment** — Local only — no public endpoint, not deployed to GCP
+- **forksync SYNC_REPORT.md** — v2 on Cloud Run does not write SYNC_REPORT.md back to GitHub (workflow fix deployed, pending next nightly run)
+- **AI categories** — Only 'tooling' exists in reporium-db — real AI categorization requires ingestion pipeline
 
 ---
 
-## In Progress
+## Fixing Now
 
-- [**reporium-db**](https://github.com/perditioinc/reporium-db) — GraphQL batch fetch, schedule tiers, checkpoint/resume, partitioned JSON: target 10K repos  
-  last commit: `2026-03-19` · 1 stars · 0 open issues
-  _GraphQL pagination · Nightly/weekly/monthly tiers · Checkpoint/resume · Partitioned JSON output_
-- [**reporium-dataset**](https://github.com/perditioinc/reporium-dataset) — Nightly auto-generated README, top repos table, freshness indicator, public dataset mirror  
-  last commit: `2026-03-19` · 1 stars · 0 open issues
-  _Nightly auto-generated README · Top repos by stars · Language breakdown · 12 AI categories_
-- [**portfolio**](https://github.com/perditioinc/portfolio) — Real metrics from live sources, auto-updates nightly, link to live products  
-  last commit: `2026-03-19` · 1 stars · 0 open issues
-  _Live GitHub API data · Metrics from forksync + reporium-db · Nightly auto-update_
-- [**reporium-roadmap**](https://github.com/perditioinc/reporium-roadmap) — This file: live commit dates, feature tracking, version history  
-  last commit: `2026-03-19` · 1 stars · 0 open issues
-  _Live GitHub commit dates · Version numbers · Feature lists · Changelog_
-- [**reporium-metrics**](https://github.com/perditioinc/reporium-metrics) — Nightly collection, ASCII trend charts, milestone tracking  
-  last commit: `2026-03-19` · 1 stars · 0 open issues
-  _Nightly collection · ASCII trend charts · Milestone tracking · 91% improvement logged_
+- **forksync SYNC_REPORT.md** — Nightly workflow now captures Cloud Run output and commits SYNC_REPORT.md — unblocks metrics and portfolio
+- **reporium-ingestion pipeline** — Fix cloud deployment — unblocks categories, summaries, reporium.com usefulness
+- **reporium-api cloud deployment** — Deploy to GCP — unblocks public read endpoint
+
+---
+
+## Next Up — end of March 2026
+
+- 10K repos tracked in reporium-db
+- Categories working (requires ingestion pipeline fix)
+- reporium-api deployed to cloud with public read endpoint
+
+---
+
+## Target: end of April 2026
+
+- 100K repos tracked
+- repo-intelligence library live on PyPI
+- reporium frontend v2 (Figma-designed)
 
 ---
 
@@ -49,32 +58,16 @@
 
 ---
 
-## Backlog
-
-- **reporium observability** — Latency dashboards, error rate tracking, SLO definitions
-- **public API v2** — Rate-limited public REST API with API keys
-
----
-
 ## Changelog
 
-## v0.3.0 - 2026-03-17
+### v0.3.0 - 2026-03-18
+6 new repos built, forksync v2 live, reporium-db nightly sync active, 147 tests passing
 
-- forksync v2 launched: 68s for 805 repos (was 13 min - 91% faster)
-- 6 new repos built: reporium-db, reporium-dataset, portfolio, reporium-roadmap, reporium-metrics, repo-intelligence
-- Cloud Run + Redis + VPC connector deployed for forksync
+### v0.2.0 - 2026-03-01
+reporium-ingestion pipeline built, 12 AI categories defined
 
-## v0.2.0 - 2026-03-01
-
-- reporium-ingestion pipeline live
-- 702 repos AI-enriched across 12 categories
-- Ollama local AI for tag generation
-
-## v0.1.0 - 2026-01-01
-
-- reporium frontend and API launched
-- 805 repos tracked
-- Full-text search and category filtering live at reporium.com
+### v0.1.0 - 2026-01-01
+reporium.com and reporium-api first deployed
 
 
 ---
