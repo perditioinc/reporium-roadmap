@@ -11,7 +11,7 @@
 - [**reporium.com**](https://reporium.com) — Live — 818 repos browseable, full-text search, mobile responsive  
   last commit: `2026-03-18` · 1 stars
 - [**forksync v2**](https://github.com/perditioinc/forksync) — 68s for 818 repos on Cloud Run, nightly cron active at 6am UTC  
-  last commit: `2026-03-17` · 1 stars
+  last commit: `2026-03-19` · 1 stars
 - [**reporium-db**](https://github.com/perditioinc/reporium-db) — Nightly sync active, 818 repos tracked, 29 languages, GraphQL batch fetch  
   last commit: `2026-03-19` · 1 stars
 - [**reporium-api**](https://github.com/perditioinc/reporium-api) — Running locally at localhost:8000, 702 repos in DB, 571 have ai_dev_skills  
