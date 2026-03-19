@@ -94,13 +94,13 @@
   "changelog": [
     {
       "version": "v0.3.0",
-      "date": "2026-03-18",
-      "notes": "6 new repos built, forksync v2 live, reporium-db nightly sync active, 147 tests passing"
+      "date": "2026-03-19",
+      "notes": "forksync v2 live on Cloud Run, reporium-db nightly sync active, {test_count} tests passing across all repos"
     },
     {
       "version": "v0.2.0",
       "date": "2026-03-01",
-      "notes": "reporium-ingestion pipeline built, 12 AI categories defined"
+      "notes": "reporium-ingestion pipeline built (not yet deployed to cloud), 12 AI categories defined in code"
     },
     {
       "version": "v0.1.0",

@@ -10,6 +10,7 @@ import respx
 from generate import (
     _apply_context,
     _apply_context_to_items,
+    _count_repo_tests,
     _fetch_db_stats,
     _fetch_repo_stats,
     _format_item,
@@ -247,3 +248,54 @@ async def test_fetch_db_stats_returns_zeros_on_error():
     result = await _fetch_db_stats("tok")
     assert result["db_total"] == 0
     assert result["db_languages"] == 0
+
+
+# ── _count_repo_tests ─────────────────────────────────────────────────────────
+
+_TESTS_DIR_URL = "https://api.github.com/repos/perditioinc/reporium-db/contents/tests"
+_TEST_FILE_URL = "https://raw.githubusercontent.com/perditioinc/reporium-db/main/tests/test_fetcher.py"
+
+
+@respx.mock
+async def test_count_repo_tests_counts_def_test():
+    """Counts def test_ occurrences across test files in a repo."""
+    file_content = "\ndef test_one():\n    pass\n\ndef test_two():\n    pass\n"
+    respx.get(_TESTS_DIR_URL).mock(
+        return_value=httpx.Response(
+            200,
+            json=[{"name": "test_fetcher.py", "download_url": _TEST_FILE_URL}],
+        )
+    )
+    respx.get(_TEST_FILE_URL).mock(return_value=httpx.Response(200, text=file_content))
+    async with httpx.AsyncClient(timeout=15) as client:
+        count = await _count_repo_tests(client, "tok", "perditioinc/reporium-db")
+    assert count == 2
+
+
+@respx.mock
+async def test_count_repo_tests_returns_zero_on_missing_tests_dir():
+    """Returns 0 when the tests/ directory does not exist (404)."""
+    respx.get(_TESTS_DIR_URL).mock(return_value=httpx.Response(404))
+    async with httpx.AsyncClient(timeout=15) as client:
+        count = await _count_repo_tests(client, "tok", "perditioinc/reporium-db")
+    assert count == 0
+
+
+@respx.mock
+async def test_count_repo_tests_skips_non_test_files():
+    """Only counts files whose names start with test_."""
+    respx.get(_TESTS_DIR_URL).mock(
+        return_value=httpx.Response(
+            200,
+            json=[
+                {"name": "conftest.py", "download_url": "https://example.com/conftest.py"},
+                {"name": "test_foo.py", "download_url": _TEST_FILE_URL},
+            ],
+        )
+    )
+    respx.get(_TEST_FILE_URL).mock(
+        return_value=httpx.Response(200, text="\ndef test_bar():\n    pass\n")
+    )
+    async with httpx.AsyncClient(timeout=15) as client:
+        count = await _count_repo_tests(client, "tok", "perditioinc/reporium-db")
+    assert count == 1
