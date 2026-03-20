@@ -412,7 +412,8 @@ def build_readme(roadmap: dict, stats_map: dict[str, Optional[dict]], generated_
 
         return f"""# Reporium Roadmap
 <!-- perditio-badges-start -->
-[![Tests](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml/badge.svg)](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml)
+[![Tests](https://github.com/perditioinc/reporium-roadmap/actions/workflows/test.yml/badge.svg)](https://github.com/perditioinc/reporium-roadmap/actions/workflows/test.yml)
+[![Nightly](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml/badge.svg)](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml)
 ![Last Commit](https://img.shields.io/github/last-commit/perditioinc/reporium-roadmap)
 ![python](https://img.shields.io/badge/python-3.11%2B-3776ab)
 ![suite](https://img.shields.io/badge/suite-Reporium-6e40c9)
@@ -458,7 +459,8 @@ def build_readme(roadmap: dict, stats_map: dict[str, Optional[dict]], generated_
 
     return f"""# Reporium Roadmap
 <!-- perditio-badges-start -->
-[![Tests](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml/badge.svg)](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml)
+[![Tests](https://github.com/perditioinc/reporium-roadmap/actions/workflows/test.yml/badge.svg)](https://github.com/perditioinc/reporium-roadmap/actions/workflows/test.yml)
+[![Nightly](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml/badge.svg)](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml)
 ![Last Commit](https://img.shields.io/github/last-commit/perditioinc/reporium-roadmap)
 ![python](https://img.shields.io/badge/python-3.11%2B-3776ab)
 ![suite](https://img.shields.io/badge/suite-Reporium-6e40c9)
