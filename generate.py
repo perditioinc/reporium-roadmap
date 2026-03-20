@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 GITHUB_API = "https://api.github.com/repos"
 TIMEOUT = 15
 _DB_INDEX_URL = "https://raw.githubusercontent.com/perditioinc/reporium-db/main/data/index.json"
+REPORIUM_API_URL = os.getenv("REPORIUM_API_URL", "")
 
 
 async def _fetch_db_stats(token: str) -> dict[str, Any]:
@@ -44,6 +45,29 @@ async def _fetch_db_stats(token: str) -> dict[str, Any]:
     except Exception as exc:  # noqa: BLE001
         logger.warning("Failed to fetch reporium-db index: %s", exc)
         return {"db_total": 0, "db_languages": 0}
+
+
+async def _fetch_api_audit() -> dict[str, Any]:
+    """Fetch live platform health from reporium-api /audit/status.
+
+    Returns:
+        Dict with api_status, api_repos_tracked. Falls back to defaults on error.
+    """
+    if not REPORIUM_API_URL:
+        logger.info("REPORIUM_API_URL not set — skipping API audit")
+        return {"api_status": "unknown", "api_repos_tracked": 0}
+    try:
+        async with httpx.AsyncClient(timeout=TIMEOUT) as client:
+            resp = await client.get(f"{REPORIUM_API_URL}/audit/status")
+            resp.raise_for_status()
+            data = resp.json()
+        return {
+            "api_status": data.get("api", "unknown"),
+            "api_repos_tracked": data.get("repos_tracked", 0),
+        }
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Failed to fetch API audit status: %s", exc)
+        return {"api_status": "unavailable", "api_repos_tracked": 0}
 
 
 _TEST_REPOS = [
@@ -471,11 +495,12 @@ async def main() -> None:
     import asyncio
 
     # Fetch live stats for template substitution concurrently
-    db_stats, test_count = await asyncio.gather(
+    db_stats, test_count, api_audit = await asyncio.gather(
         _fetch_db_stats(token),
         _count_total_tests(token),
+        _fetch_api_audit(),
     )
-    context = {**db_stats, "test_count": test_count}
+    context = {**db_stats, **api_audit, "test_count": test_count}
 
     # Apply live context to all text fields that contain placeholders
     roadmap = dict(roadmap)
