@@ -1,6 +1,10 @@
 # Reporium Roadmap
-
-[![Nightly](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml/badge.svg)](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml)
+<!-- perditio-badges-start -->
+[![Tests](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml/badge.svg)](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml)
+![Last Commit](https://img.shields.io/github/last-commit/perditioinc/reporium-roadmap)
+![python](https://img.shields.io/badge/python-3.11%2B-3776ab)
+![suite](https://img.shields.io/badge/suite-Reporium-6e40c9)
+<!-- perditio-badges-end -->
 
 > Track every meaningful AI development tool on GitHub. 10K repos by end of March 2026. 100K by end of April 2026.
 
