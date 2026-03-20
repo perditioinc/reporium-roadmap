@@ -1,5 +1,7 @@
 # Reporium Roadmap
 
+[![Nightly](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml/badge.svg)](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml)
+
 > Track every meaningful AI development tool on GitHub. 10K repos by end of March 2026. 100K by end of April 2026.
 
 ---
@@ -8,14 +10,14 @@
 
 ### Working
 
-- [**reporium.com**](https://reporium.com) — Live — 818 repos browseable, full-text search, mobile responsive  
-  last commit: `2026-03-19`
-- [**forksync v2**](https://github.com/perditioinc/forksync) — Cloud Run nightly sync active at 6am UTC, 818 repos tracked  
-  last commit: `2026-03-19`
-- [**reporium-db**](https://github.com/perditioinc/reporium-db) — Nightly sync active, 818 repos tracked, 29 languages, GraphQL batch fetch  
-  last commit: `2026-03-19`
-- [**reporium-api**](https://github.com/perditioinc/reporium-api) — Local only — 818 repos accessible via REST, cloud deployment pending  
-  last commit: `2026-03-19`
+- [**reporium.com**](https://reporium.com) — Live — 826 repos browseable, full-text search, mobile responsive  
+  last commit: `2026-03-20`
+- [**forksync v2**](https://github.com/perditioinc/forksync) — Cloud Run nightly sync active at 6am UTC, 826 repos tracked  
+  last commit: `2026-03-20`
+- [**reporium-db**](https://github.com/perditioinc/reporium-db) — Nightly sync active, 826 repos tracked, 29 languages, GraphQL batch fetch  
+  last commit: `2026-03-20`
+- [**reporium-api**](https://github.com/perditioinc/reporium-api) — Local only — 826 repos accessible via REST, cloud deployment pending  
+  last commit: `2026-03-20`
 
 ### Not Working
 
