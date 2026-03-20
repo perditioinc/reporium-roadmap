@@ -388,6 +388,8 @@ def build_readme(roadmap: dict, stats_map: dict[str, Optional[dict]], generated_
 
         return f"""# Reporium Roadmap
 
+[![Nightly](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml/badge.svg)](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml)
+
 > {vision}
 
 ---
