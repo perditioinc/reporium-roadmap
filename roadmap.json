@@ -1,7 +1,7 @@
 {
   "vision": "Track every meaningful AI development tool on GitHub. 10K repos by end of March 2026. 100K by end of April 2026.",
   "version": "v0.3.0",
-  "as_of": "2026-03-18",
+  "as_of": "2026-03-19",
   "current_state": {
     "working": [
       {
@@ -94,17 +94,17 @@
   "changelog": [
     {
       "version": "v0.3.0",
-      "date": "2026-03-19",
-      "notes": "forksync v2 live on Cloud Run, reporium-db nightly sync active, {test_count} tests passing across all repos"
+      "date": "2026-03-17",
+      "notes": "reporium-db, reporium-dataset, reporium-metrics, portfolio, repo-intelligence all launched — {test_count} tests passing across all repos"
     },
     {
       "version": "v0.2.0",
-      "date": "2026-03-01",
-      "notes": "reporium-ingestion pipeline built, AI enrichment pipeline defined but not yet running in cloud — 0 categories enriched"
+      "date": "2026-03-16",
+      "notes": "forksync v2 launched on Cloud Run (68s for 818 repos), reporium-ingestion pipeline built — not yet deployed to cloud"
     },
     {
       "version": "v0.1.0",
-      "date": "2026-01-01",
+      "date": "2026-03-14",
       "notes": "reporium.com and reporium-api first deployed"
     }
   ]
