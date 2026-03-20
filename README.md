@@ -16,27 +16,30 @@
 
 - [**reporium.com**](https://reporium.com) — Live — 826 repos browseable, full-text search, mobile responsive  
   last commit: `2026-03-20`
-- [**forksync v2**](https://github.com/perditioinc/forksync) — Cloud Run nightly sync active at 6am UTC, 826 repos tracked  
+- [**forksync v2**](https://github.com/perditioinc/forksync) — Cloud Run nightly sync + SYNC_REPORT.md committed via GitHub API after each run  
   last commit: `2026-03-20`
 - [**reporium-db**](https://github.com/perditioinc/reporium-db) — Nightly sync active, 826 repos tracked, 29 languages, GraphQL batch fetch  
   last commit: `2026-03-20`
-- [**reporium-api**](https://github.com/perditioinc/reporium-api) — Local only — 826 repos accessible via REST, cloud deployment pending  
+- [**reporium-api**](https://reporium-api-573778300586.us-central1.run.app/docs) — Deployed to Cloud Run — 0 repos via REST API, Swagger UI public at /docs  
+  last commit: `2026-03-20`
+- [**reporium-events**](https://github.com/perditioinc/reporium-events) — Pub/Sub topic live, event schemas defined, forksync + reporium-db publishing events  
+  last commit: `2026-03-20`
+- [**reporium-audit**](https://github.com/perditioinc/reporium-audit) — Nightly 8am UTC audit of all platform components, AUDIT_REPORT.md auto-generated  
+  last commit: `2026-03-20`
+- [**perditio-devkit**](https://github.com/perditioinc/perditio-devkit) — Shared tooling: badges, GitHub client, file utilities — used by all repos  
   last commit: `2026-03-20`
 
 ### Not Working
 
 - [**reporium-ingestion**](https://github.com/perditioinc/reporium-ingestion) — Pipeline not running in cloud — 0 categories enriched, 0 readme summaries
-- **reporium-api cloud deployment** — Local only — no public endpoint, not deployed to GCP
-- **forksync SYNC_REPORT.md** — v2 on Cloud Run does not write SYNC_REPORT.md back to GitHub (workflow fix deployed, pending next nightly run)
 - **AI categories** — Only 'tooling' exists in reporium-db — real AI categorization requires ingestion pipeline
 
 ---
 
 ## Fixing Now
 
-- **forksync SYNC_REPORT.md** — Nightly workflow now captures Cloud Run output and commits SYNC_REPORT.md — unblocks metrics and portfolio
 - **reporium-ingestion pipeline** — Fix cloud deployment — unblocks categories, summaries, reporium.com usefulness
-- **reporium-api cloud deployment** — Deploy to GCP — unblocks public read endpoint
+- **10K repos milestone** — Expand GitHub fetcher to discover repos beyond perditioinc forks
 
 ---
 
@@ -44,7 +47,7 @@
 
 - 10K repos tracked in reporium-db
 - Categories working (requires ingestion pipeline fix)
-- reporium-api deployed to cloud with public read endpoint
+- Redis cache enabled on reporium-api
 
 ---
 
@@ -66,6 +69,9 @@
 
 ## Changelog
 
+### v0.4.0 - 2026-03-20
+reporium-api deployed to Cloud Run (0 repos live), reporium-events Pub/Sub system, reporium-audit nightly health checks, perditio-devkit shared tooling, build counters on all nightly repos, Reporium suite badges across all repos — 167 tests passing
+
 ### v0.3.0 - 2026-03-17
 reporium-db, reporium-dataset, reporium-metrics, portfolio, repo-intelligence all launched — 167 tests passing across all repos
 
@@ -78,4 +84,4 @@ reporium.com and reporium-api first deployed
 
 ---
 
-*Platform **v0.3.0** · Last updated: 2026-03-20 · See [CHANGELOG.md](CHANGELOG.md) for version history.*
+*Platform **v0.4.0** · Last updated: 2026-03-20 · See [CHANGELOG.md](CHANGELOG.md) for version history.*
