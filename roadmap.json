@@ -87,12 +87,34 @@
       "description": "0-100 repo scorer: README, activity, community, CI. Pip-installable."
     },
     {
+      "name": "github-ai-trends",
+      "description": "Daily GitHub trending scraper focused on AI repos. Scrapes github.com/trending per language (Python, TypeScript, Rust, Go, C++, Jupyter Notebook) for daily, weekly, and monthly time periods. Stores one timestamped snapshot per day. Feeds new repo candidates to reporium-db. Does not do AI enrichment — discovery only.",
+      "status": "planned",
+      "replaces": "reporium-trending (deleted 2026-03-20 — was incorrectly scoped)"
+    },
+    {
       "name": "reporium frontend v2",
       "description": "Figma-designed UI: faster, cleaner, better filtering"
     },
     {
       "name": "reporium enterprise",
       "description": "Self-hosted for internal repos"
+    }
+  ],
+  "backlog": [
+    {
+      "name": "reporium-trending",
+      "description": "Multi-source trend aggregation across GitHub, LinkedIn, X, and other platforms. Requires dedicated scraping infrastructure and multiple data source integrations. Planned for a future phase after core platform is stable.",
+      "status": "backlog",
+      "blocked_by": "Requires ingestion pipeline, dedicated scraping infrastructure, and multiple third-party API integrations. Not started."
+    }
+  ],
+  "deleted_repos": [
+    {
+      "name": "reporium-trending",
+      "deleted_date": "2026-03-20",
+      "reason": "Incorrectly scoped. Was using GitHub Search API star counts and lookback days instead of scraping actual GitHub trending pages. Also misnamed — reporium-trending should eventually aggregate trends from multiple sources (GitHub, LinkedIn, X), not just GitHub. Replaced by github-ai-trends for GitHub-only trending.",
+      "replaced_by": "github-ai-trends (planned)"
     }
   ],
   "changelog": [

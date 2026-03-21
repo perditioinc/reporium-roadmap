@@ -22,7 +22,7 @@
 - [**reporium-db**](https://github.com/perditioinc/reporium-db) — Nightly sync active, 826 repos tracked, 29 languages, GraphQL batch fetch  
   last commit: `2026-03-20`
 - [**reporium-api**](https://reporium-api-573778300586.us-central1.run.app/docs) — Deployed to Cloud Run — 0 repos via REST API, Swagger UI public at /docs  
-  last commit: `2026-03-20`
+  last commit: `2026-03-21`
 - [**reporium-events**](https://github.com/perditioinc/reporium-events) — Pub/Sub topic live, event schemas defined, forksync + reporium-db publishing events  
   last commit: `2026-03-20`
 - [**reporium-audit**](https://github.com/perditioinc/reporium-audit) — Nightly 8am UTC audit of all platform components, AUDIT_REPORT.md auto-generated  
@@ -63,6 +63,7 @@
 ## Coming Next
 
 - [**repo-intelligence**](https://github.com/perditioinc/repo-intelligence) — 0-100 repo scorer: README, activity, community, CI. Pip-installable.
+- **github-ai-trends** — Daily GitHub trending scraper focused on AI repos. Scrapes github.com/trending per language (Python, TypeScript, Rust, Go, C++, Jupyter Notebook) for daily, weekly, and monthly time periods. Stores one timestamped snapshot per day. Feeds new repo candidates to reporium-db. Does not do AI enrichment — discovery only.
 - **reporium frontend v2** — Figma-designed UI: faster, cleaner, better filtering
 - **reporium enterprise** — Self-hosted for internal repos
 
@@ -85,4 +86,4 @@ reporium.com and reporium-api first deployed
 
 ---
 
-*Platform **v0.4.0** · Last updated: 2026-03-20 · See [CHANGELOG.md](CHANGELOG.md) for version history.*
+*Platform **v0.4.0** · Last updated: 2026-03-21 · See [CHANGELOG.md](CHANGELOG.md) for version history.*
