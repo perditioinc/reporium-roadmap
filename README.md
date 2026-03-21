@@ -26,7 +26,7 @@
 - [**reporium-events**](https://github.com/perditioinc/reporium-events) — Pub/Sub topic live, event schemas defined, forksync + reporium-db publishing events  
   last commit: `2026-03-21`
 - [**reporium-audit**](https://github.com/perditioinc/reporium-audit) — Nightly 8am UTC audit of all platform components, AUDIT_REPORT.md auto-generated  
-  last commit: `2026-03-20`
+  last commit: `2026-03-21`
 - [**perditio-devkit**](https://github.com/perditioinc/perditio-devkit) — Shared tooling: badges, GitHub client, file utilities — used by all repos  
   last commit: `2026-03-21`
 
@@ -72,10 +72,10 @@
 ## Changelog
 
 ### v0.4.0 - 2026-03-20
-reporium-api deployed to Cloud Run (0 repos live), reporium-events Pub/Sub system, reporium-audit nightly health checks, perditio-devkit shared tooling, build counters on all nightly repos, Reporium suite badges across all repos — 154 tests passing
+reporium-api deployed to Cloud Run (0 repos live), reporium-events Pub/Sub system, reporium-audit nightly health checks, perditio-devkit shared tooling, build counters on all nightly repos, Reporium suite badges across all repos — 157 tests passing
 
 ### v0.3.0 - 2026-03-17
-reporium-db, reporium-dataset, reporium-metrics, portfolio, repo-intelligence all launched — 154 tests passing across all repos
+reporium-db, reporium-dataset, reporium-metrics, portfolio, repo-intelligence all launched — 157 tests passing across all repos
 
 ### v0.2.0 - 2026-03-16
 forksync v2 launched on Cloud Run (68s for 818 repos), reporium-ingestion pipeline built — not yet deployed to cloud
