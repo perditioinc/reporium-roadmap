@@ -1,25 +1,25 @@
 {
   "vision": "Track every meaningful AI development tool on GitHub. 10K repos by end of March 2026. 100K by end of April 2026.",
-  "version": "v0.6.1",
+  "version": "v0.7.0",
   "as_of": "2026-03-23",
   "current_state": {
     "working": [
       {
-        "name": "reporium.com",
+        "name": "reporium.com v0.7.0",
         "repo": "perditioinc/reporium",
         "url": "https://reporium.com",
-        "evidence": "Live — 1406 repos. Repo cards fixed: system tags removed from chips, builder badges correct, category aliases resolved, timeline section guarded. Filter bar clean (no stale Audio/Deployment/Fine Tuning tabs). MetricsSidebar LIBRARY BY CATEGORY fixed (normalizedCategories passed). AI Dev Coverage all green. Builders section showing correct orgs. CI green, GitHub Pages deployed. reporium v0.6.1 released."
+        "evidence": "Live — 1406 repos. AskBar fully functional (natural language Q&A over repo library via /intelligence/ask). Progressive loading: owned.json (690KB, 16 repos) renders in ~0.5s, full library.json (5.3MB) merges in background. Repo cards fixed: system tags, builder badges, category aliases, timeline guard. Filter bar clean. MetricsSidebar fixed. AI Dev Coverage all green. CI green, GitHub Pages deployed. 197 tests passing."
       },
       {
-        "name": "reporium-api v1.5.0",
+        "name": "reporium-api v1.6.0",
         "repo": "perditioinc/reporium-api",
         "url": "https://reporium-api-573778300586.us-central1.run.app/docs",
-        "evidence": "1406 repos, 6209 knowledge graph edges. Prompt injection prevention in /intelligence/query (input validation, XML structural delimiters, hardened system prompt). SQL injection fix. KNOWN_ORG_CATEGORIES overrides for 35 orgs. 32 unit tests passing."
+        "evidence": "Cloud Run revision 00027-2v5. 1406 repos, 6209 knowledge graph edges. /intelligence/ask public endpoint (10/min + 100/day rate limit). Prompt injection + SQL injection fixed. CORS restricted to reporium.com origins. CI/CD auto-deploy on push to main. DB at migration 004 (head): is_private + stargazers_count columns. GH_TOKEN wired for nightly commit stats fetch. 32 unit tests passing."
       },
       {
         "name": "reporium-ingestion v1.3.0",
         "repo": "perditioinc/reporium-ingestion",
-        "evidence": "826/826 repos enriched (Claude API, $2.52). 14K tags, 2K pmSkills, 918 industries, 825 builders, 4920 categories. backfill_fork_dates.py ready to run."
+        "evidence": "1406/1406 repos enriched. 14K tags, 2K pmSkills, 918 industries, 825 builders, 4920 categories. fetch_commit_stats.py wired into nightly_enrichment.yml CI. backfill_fork_dates.py ran — all 1390 forks populated."
       },
       {
         "name": "forksync v2",
@@ -49,19 +49,9 @@
     ],
     "not_working": [
       {
-        "name": "fork timeline dates",
+        "name": "commit data for 1011 repos",
         "repo": "perditioinc/reporium-ingestion",
-        "reason": "forked_at, your_last_push_at, upstream_created_at empty for all 1390 forks. backfill_fork_dates.py script exists but not yet run against production DB. Timeline section hidden on cards until backfill runs."
-      },
-      {
-        "name": "reporium-api Cloud Run redeploy",
-        "repo": "perditioinc/reporium-api",
-        "reason": "v1.5.0 code on GitHub but Cloud Run deploy workflow failed (GCP_SA_KEY issue). Needs manual trigger."
-      },
-      {
-        "name": "reporium-api CORS",
-        "repo": "perditioinc/reporium-api",
-        "reason": "allow_origins=['*'] in main.py. Tracked in issue #7."
+        "reason": "fetch_commit_stats.py now wired into nightly CI (7am UTC). Will populate on next nightly run. Not a blocking issue — cards still render, commit section just shows empty."
       }
     ]
   },
@@ -81,21 +71,22 @@
   },
   "fixing_now": [
     {
-      "name": "fork timeline dates backfill",
-      "description": "Run backfill_fork_dates.py against production Neon DB to populate forked_at, your_last_push_at, upstream_created_at for 1390 forks."
+      "name": "commit stats backfill",
+      "description": "fetch_commit_stats.py wired into nightly CI — will populate commit data for 1011 repos on next 7am UTC run."
     },
     {
-      "name": "reporium-api Cloud Run redeploy",
-      "description": "Redeploy API v1.5.0 with security fixes. Check GCP_SA_KEY secret."
+      "name": "reporium taxonomy expansion",
+      "description": "28 skill areas (Issue #17). Re-enrich all 1406 repos, update frontend to 28 coverage badges, curate tags. Feature branch: feature/taxonomy-expansion. Cowork lane."
     }
   ],
   "next_up": {
     "deadline": "end of March 2026",
     "items": [
       "10K repos tracked in reporium-db",
-      "Fork timeline dates backfilled and visible on cards",
-      "reporium-api Cloud Run running v1.5.0",
-      "reporium-events integration in reporium-api (publish api.deployed on deploy)"
+      "Taxonomy expansion: 28 skill areas, 58 categories, ~200 curated tags",
+      "Wire ingestion.completed + repo.added events into enrichment pipeline",
+      "API response time monitoring",
+      "Knowledge graph visualization (D3.js/Three.js, 6209 edges)"
     ]
   },
   "future": {
@@ -138,6 +129,11 @@
     }
   ],
   "changelog": [
+    {
+      "version": "v0.7.0",
+      "date": "2026-03-23",
+      "notes": "AskBar: natural language Q&A over repo library via public /intelligence/ask endpoint (rate limited). Progressive loading: owned.json (690KB) renders in ~0.5s, library.json (5.3MB) merges in background — 87% first-paint payload reduction. CI/CD auto-deploy on push to main for reporium-api. DB migrations 003+004 applied (is_private, stargazers_count). CORS restricted. GH_TOKEN wired for commit stats. PR #16 merged (tag cloud status filter). Issues #27, #30 closed. reporium-api v1.6.0, reporium v0.7.0."
+    },
     {
       "version": "v0.6.1",
       "date": "2026-03-23",
