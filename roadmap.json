@@ -1,6 +1,6 @@
 {
   "vision": "Track every meaningful AI development tool on GitHub. 10K repos by end of March 2026. 100K by end of April 2026.",
-  "version": "v0.6.0",
+  "version": "v0.6.1",
   "as_of": "2026-03-23",
   "current_state": {
     "working": [
@@ -8,7 +8,7 @@
         "name": "reporium.com",
         "repo": "perditioinc/reporium",
         "url": "https://reporium.com",
-        "evidence": "Live — 1406 repos. Repo cards fixed: system tags removed from chips, builder badges correct, category aliases resolved, timeline section guarded. Filter bar clean (no stale Audio/Deployment/Fine Tuning tabs). AI Dev Coverage all green. Builders section showing correct orgs. CI green, GitHub Pages deployed."
+        "evidence": "Live — 1406 repos. Repo cards fixed: system tags removed from chips, builder badges correct, category aliases resolved, timeline section guarded. Filter bar clean (no stale Audio/Deployment/Fine Tuning tabs). MetricsSidebar LIBRARY BY CATEGORY fixed (normalizedCategories passed). AI Dev Coverage all green. Builders section showing correct orgs. CI green, GitHub Pages deployed. reporium v0.6.1 released."
       },
       {
         "name": "reporium-api v1.5.0",
@@ -54,11 +54,6 @@
         "reason": "forked_at, your_last_push_at, upstream_created_at empty for all 1390 forks. backfill_fork_dates.py script exists but not yet run against production DB. Timeline section hidden on cards until backfill runs."
       },
       {
-        "name": "MetricsSidebar stale categories",
-        "repo": "perditioinc/reporium",
-        "reason": "LIBRARY BY CATEGORY sidebar still shows Audio:1, Deployment:2. Filter bar is fixed. Tracked in issue #19."
-      },
-      {
         "name": "reporium-api Cloud Run redeploy",
         "repo": "perditioinc/reporium-api",
         "reason": "v1.5.0 code on GitHub but Cloud Run deploy workflow failed (GCP_SA_KEY issue). Needs manual trigger."
@@ -88,10 +83,6 @@
     {
       "name": "fork timeline dates backfill",
       "description": "Run backfill_fork_dates.py against production Neon DB to populate forked_at, your_last_push_at, upstream_created_at for 1390 forks."
-    },
-    {
-      "name": "MetricsSidebar category normalization",
-      "description": "Pass normalizedCategories to MetricsSidebar. Issue #19."
     },
     {
       "name": "reporium-api Cloud Run redeploy",
@@ -147,6 +138,11 @@
     }
   ],
   "changelog": [
+    {
+      "version": "v0.6.1",
+      "date": "2026-03-23",
+      "notes": "MetricsSidebar LIBRARY BY CATEGORY fixed: normalizedCategories passed so stale Audio/Deployment entries no longer appear. jest worktree exclusion added. reporium v0.6.1 tagged."
+    },
     {
       "version": "v0.6.0",
       "date": "2026-03-23",
