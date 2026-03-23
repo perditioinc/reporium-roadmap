@@ -1,75 +1,110 @@
 {
   "vision": "Track every meaningful AI development tool on GitHub. 10K repos by end of March 2026. 100K by end of April 2026.",
-  "version": "v0.4.0",
-  "as_of": "2026-03-20",
+  "version": "v0.6.0",
+  "as_of": "2026-03-23",
   "current_state": {
     "working": [
       {
         "name": "reporium.com",
         "repo": "perditioinc/reporium",
         "url": "https://reporium.com",
-        "evidence": "Live — {db_total} repos browseable, full-text search, mobile responsive"
+        "evidence": "Live — 1406 repos. Repo cards fixed: system tags removed from chips, builder badges correct, category aliases resolved, timeline section guarded. Filter bar clean (no stale Audio/Deployment/Fine Tuning tabs). AI Dev Coverage all green. Builders section showing correct orgs. CI green, GitHub Pages deployed."
+      },
+      {
+        "name": "reporium-api v1.5.0",
+        "repo": "perditioinc/reporium-api",
+        "url": "https://reporium-api-573778300586.us-central1.run.app/docs",
+        "evidence": "1406 repos, 6209 knowledge graph edges. Prompt injection prevention in /intelligence/query (input validation, XML structural delimiters, hardened system prompt). SQL injection fix. KNOWN_ORG_CATEGORIES overrides for 35 orgs. 32 unit tests passing."
+      },
+      {
+        "name": "reporium-ingestion v1.3.0",
+        "repo": "perditioinc/reporium-ingestion",
+        "evidence": "826/826 repos enriched (Claude API, $2.52). 14K tags, 2K pmSkills, 918 industries, 825 builders, 4920 categories. backfill_fork_dates.py ready to run."
       },
       {
         "name": "forksync v2",
         "repo": "perditioinc/forksync",
-        "evidence": "Cloud Run nightly sync + SYNC_REPORT.md committed via GitHub API after each run"
+        "evidence": "Cloud Run nightly sync, SYNC_REPORT.md committed after each run."
       },
       {
         "name": "reporium-db",
         "repo": "perditioinc/reporium-db",
-        "evidence": "Nightly sync active, {db_total} repos tracked, {db_languages} languages, GraphQL batch fetch"
-      },
-      {
-        "name": "reporium-api",
-        "repo": "perditioinc/reporium-api",
-        "url": "https://reporium-api-573778300586.us-central1.run.app/docs",
-        "evidence": "Deployed to Cloud Run — {api_repos_tracked} repos via REST API, Swagger UI public at /docs"
+        "evidence": "Nightly sync active, 1406 repos tracked."
       },
       {
         "name": "reporium-events",
         "repo": "perditioinc/reporium-events",
-        "evidence": "Pub/Sub topic live, event schemas defined, forksync + reporium-db publishing events"
+        "evidence": "GCP Pub/Sub topic 'reporium-events' live. Event schemas: sync.completed, db.synced, ingestion.completed, repo.added, repo.updated, health.check, build.failed, api.deployed. Publisher client with atomic build_number counter in Firestore. Validated payload schemas."
       },
       {
         "name": "reporium-audit",
         "repo": "perditioinc/reporium-audit",
-        "evidence": "Nightly 8am UTC audit of all platform components, AUDIT_REPORT.md auto-generated"
+        "evidence": "Nightly 8am UTC audit of all platform components, AUDIT_REPORT.md auto-generated."
       },
       {
         "name": "perditio-devkit",
         "repo": "perditioinc/perditio-devkit",
-        "evidence": "Shared tooling: badges, GitHub client, file utilities — used by all repos"
+        "evidence": "Shared tooling: badges, GitHub client, file utilities — used by all repos."
       }
     ],
     "not_working": [
       {
-        "name": "reporium-ingestion",
+        "name": "fork timeline dates",
         "repo": "perditioinc/reporium-ingestion",
-        "reason": "Pipeline not running in cloud — 0 categories enriched, 0 readme summaries"
+        "reason": "forked_at, your_last_push_at, upstream_created_at empty for all 1390 forks. backfill_fork_dates.py script exists but not yet run against production DB. Timeline section hidden on cards until backfill runs."
       },
       {
-        "name": "AI categories",
-        "reason": "Only 'tooling' exists in reporium-db — real AI categorization requires ingestion pipeline"
+        "name": "MetricsSidebar stale categories",
+        "repo": "perditioinc/reporium",
+        "reason": "LIBRARY BY CATEGORY sidebar still shows Audio:1, Deployment:2. Filter bar is fixed. Tracked in issue #19."
+      },
+      {
+        "name": "reporium-api Cloud Run redeploy",
+        "repo": "perditioinc/reporium-api",
+        "reason": "v1.5.0 code on GitHub but Cloud Run deploy workflow failed (GCP_SA_KEY issue). Needs manual trigger."
+      },
+      {
+        "name": "reporium-api CORS",
+        "repo": "perditioinc/reporium-api",
+        "reason": "allow_origins=['*'] in main.py. Tracked in issue #7."
       }
     ]
   },
+  "sdlc": {
+    "workflow": "Git Flow — feature/fix branches from dev, PR to dev, PR dev→main, release tag on main",
+    "branches": {
+      "main": "stable, always deployable",
+      "dev": "integration — all feature/fix PRs merge here first",
+      "feature/*": "new features, cut from dev",
+      "fix/*": "bug fixes, cut from dev",
+      "hotfix/*": "emergency production fixes, cut from main, merged to both main and dev"
+    },
+    "versioning": "semver — PATCH=bugfix, MINOR=new feature, MAJOR=breaking change",
+    "pr_required": true,
+    "tests_required": true,
+    "events": "Publish to reporium-events GCP Pub/Sub on all significant pipeline completions"
+  },
   "fixing_now": [
     {
-      "name": "reporium-ingestion pipeline",
-      "description": "Fix cloud deployment — unblocks categories, summaries, reporium.com usefulness"
+      "name": "fork timeline dates backfill",
+      "description": "Run backfill_fork_dates.py against production Neon DB to populate forked_at, your_last_push_at, upstream_created_at for 1390 forks."
     },
     {
-      "name": "10K repos milestone",
-      "description": "Expand GitHub fetcher to discover repos beyond perditioinc forks"
+      "name": "MetricsSidebar category normalization",
+      "description": "Pass normalizedCategories to MetricsSidebar. Issue #19."
+    },
+    {
+      "name": "reporium-api Cloud Run redeploy",
+      "description": "Redeploy API v1.5.0 with security fixes. Check GCP_SA_KEY secret."
     }
   ],
   "next_up": {
     "deadline": "end of March 2026",
     "items": [
       "10K repos tracked in reporium-db",
-      "Categories working (requires ingestion pipeline fix)",
-      "Redis cache enabled on reporium-api"
+      "Fork timeline dates backfilled and visible on cards",
+      "reporium-api Cloud Run running v1.5.0",
+      "reporium-events integration in reporium-api (publish api.deployed on deploy)"
     ]
   },
   "future": {
@@ -88,55 +123,59 @@
     },
     {
       "name": "github-ai-trends",
-      "description": "Daily GitHub trending scraper focused on AI repos. Scrapes github.com/trending per language (Python, TypeScript, Rust, Go, C++, Jupyter Notebook) for daily, weekly, and monthly time periods. Stores one timestamped snapshot per day. Feeds new repo candidates to reporium-db. Does not do AI enrichment — discovery only.",
-      "status": "planned",
-      "replaces": "reporium-trending (deleted 2026-03-20 — was incorrectly scoped)"
+      "description": "Daily GitHub trending scraper for AI repos. Feeds new repo candidates to reporium-db.",
+      "status": "planned"
     },
     {
       "name": "reporium frontend v2",
       "description": "Figma-designed UI: faster, cleaner, better filtering"
-    },
-    {
-      "name": "reporium enterprise",
-      "description": "Self-hosted for internal repos"
     }
   ],
   "backlog": [
     {
       "name": "reporium-trending",
-      "description": "Multi-source trend aggregation across GitHub, LinkedIn, X, and other platforms. Requires dedicated scraping infrastructure and multiple data source integrations. Planned for a future phase after core platform is stable.",
-      "status": "backlog",
-      "blocked_by": "Requires ingestion pipeline, dedicated scraping infrastructure, and multiple third-party API integrations. Not started."
+      "description": "Multi-source trend aggregation across GitHub, LinkedIn, X. Requires dedicated infrastructure.",
+      "status": "backlog"
     }
   ],
   "deleted_repos": [
     {
       "name": "reporium-trending",
       "deleted_date": "2026-03-20",
-      "reason": "Incorrectly scoped. Was using GitHub Search API star counts and lookback days instead of scraping actual GitHub trending pages. Also misnamed — reporium-trending should eventually aggregate trends from multiple sources (GitHub, LinkedIn, X), not just GitHub. Replaced by github-ai-trends for GitHub-only trending.",
+      "reason": "Incorrectly scoped. Replaced by github-ai-trends (planned).",
       "replaced_by": "github-ai-trends (planned)"
     }
   ],
   "changelog": [
     {
+      "version": "v0.6.0",
+      "date": "2026-03-23",
+      "notes": "Repo card fixes: system tags removed, category aliases, builder badge, timeline guard. Filter bar stale category normalization. AI Dev Coverage badges all green. Builders section restored. Prompt injection prevention + SQL injection fix in reporium-api. 32 unit tests. SDLC: Git Flow established, dev branch on all repos, CONTRIBUTING.md, semver releases."
+    },
+    {
+      "version": "v0.5.0",
+      "date": "2026-03-22",
+      "notes": "reporium-api security: private repo exposure fixed (is_private column, WHERE is_private=false). Redis Memorystore cache enabled via VPC connector. CI workflows across suite."
+    },
+    {
       "version": "v0.4.0",
       "date": "2026-03-20",
-      "notes": "reporium-api deployed to Cloud Run ({api_repos_tracked} repos live), reporium-events Pub/Sub system, reporium-audit nightly health checks, perditio-devkit shared tooling, build counters on all nightly repos, Reporium suite badges across all repos — {test_count} tests passing"
+      "notes": "reporium-api deployed to Cloud Run, reporium-events Pub/Sub system, reporium-audit nightly health checks, perditio-devkit shared tooling."
     },
     {
       "version": "v0.3.0",
       "date": "2026-03-17",
-      "notes": "reporium-db, reporium-dataset, reporium-metrics, portfolio, repo-intelligence all launched — {test_count} tests passing across all repos"
+      "notes": "reporium-db, reporium-dataset, reporium-metrics, portfolio, repo-intelligence all launched."
     },
     {
       "version": "v0.2.0",
       "date": "2026-03-16",
-      "notes": "forksync v2 launched on Cloud Run (68s for 818 repos), reporium-ingestion pipeline built — not yet deployed to cloud"
+      "notes": "forksync v2 launched on Cloud Run (68s for 818 repos)."
     },
     {
       "version": "v0.1.0",
       "date": "2026-03-14",
-      "notes": "reporium.com and reporium-api first deployed"
+      "notes": "reporium.com and reporium-api first deployed."
     }
   ]
 }
