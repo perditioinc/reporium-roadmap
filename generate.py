@@ -77,7 +77,7 @@ _TEST_REPOS = [
     "perditioinc/reporium-ingestion",
     "perditioinc/reporium-metrics",
     "perditioinc/portfolio",
-    "perditioinc/repo-intelligence",
+    "perditioinc/reporium-scoring",
 ]
 
 
