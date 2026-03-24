@@ -7,83 +7,119 @@
 ![suite](https://img.shields.io/badge/suite-Reporium-6e40c9)
 <!-- perditio-badges-end -->
 
-> Track every meaningful AI development tool on GitHub. 10K repos by end of March 2026. 100K by end of April 2026.
+> Track meaningful AI development tooling on GitHub while keeping execution, documentation, and platform status explicit.
 
 ---
 
-## Current State
+## Current State Guidance
+
+This README is a planning document, not a live metrics feed. For current repo totals and API-backed corpus size, use current outputs from:
+
+- `reporium-db` generated dataset and README
+- `reporium-api` audit/status output
+- `reporium-metrics` generated metrics artifacts
 
 ### Working
 
-- [**reporium.com**](https://reporium.com) — Live — 826 repos browseable, full-text search, mobile responsive  
-  last commit: `2026-03-20`
-- [**forksync v2**](https://github.com/perditioinc/forksync) — Cloud Run nightly sync + SYNC_REPORT.md committed via GitHub API after each run  
-  last commit: `2026-03-20`
-- [**reporium-db**](https://github.com/perditioinc/reporium-db) — Nightly sync active, 826 repos tracked, 29 languages, GraphQL batch fetch  
-  last commit: `2026-03-20`
-- [**reporium-api**](https://reporium-api-573778300586.us-central1.run.app/docs) — Deployed to Cloud Run — 0 repos via REST API, Swagger UI public at /docs  
-  last commit: `2026-03-21`
-- [**reporium-events**](https://github.com/perditioinc/reporium-events) — Pub/Sub topic live, event schemas defined, forksync + reporium-db publishing events  
-  last commit: `2026-03-20`
-- [**reporium-audit**](https://github.com/perditioinc/reporium-audit) — Nightly 8am UTC audit of all platform components, AUDIT_REPORT.md auto-generated  
-  last commit: `2026-03-20`
-- [**perditio-devkit**](https://github.com/perditioinc/perditio-devkit) — Shared tooling: badges, GitHub client, file utilities — used by all repos  
-  last commit: `2026-03-20`
+- [**reporium.com**](https://reporium.com) - live and browseable
+- [**forksync v2**](https://github.com/perditioinc/forksync) - nightly sync active
+- [**reporium-db**](https://github.com/perditioinc/reporium-db) - nightly sync active and current source for live corpus totals
+- [**reporium-api**](https://reporium-api-573778300586.us-central1.run.app/docs) - deployed to Cloud Run; current REST-backed repo totals should be taken from live audit/status output, not frozen roadmap text
+- [**reporium-events**](https://github.com/perditioinc/reporium-events) - schemas and publisher client exist; downstream consumer integration remains partial
+- [**reporium-audit**](https://github.com/perditioinc/reporium-audit) - nightly audit active; `AUDIT_REPORT.md` is runtime-generated and not treated as committed live truth
+- [**perditio-devkit**](https://github.com/perditioinc/perditio-devkit) - shared tooling in active use
 
-### Not Working
+### Needs Continued Work
 
-- [**reporium-ingestion**](https://github.com/perditioinc/reporium-ingestion) — Pipeline not running in cloud — 0 categories enriched, 0 readme summaries
-- **AI categories** — Only 'tooling' exists in reporium-db — real AI categorization requires ingestion pipeline
+- [**reporium-ingestion**](https://github.com/perditioinc/reporium-ingestion) - historical milestone docs exist, but current cloud-operating posture and live enrichment totals should be verified from current runs
+- AI category quality and taxonomy expansion - still an active workstream
+
+---
+
+## Branch Strategy
+
+Current suite branch strategy is mixed in practice:
+
+- Repos with a maintained `dev` branch should take feature and fix PRs into `dev` first, then promote `dev` to `main`.
+- Repos without a maintained `dev` branch should branch from `main` and PR back to `main`.
+- Do not use stale `master` references; active suite repos use `main` and, where present, `dev`.
+
+### Repos Commonly Using `dev` First
+
+- `reporium`
+- `reporium-api`
+- `reporium-db`
+- `reporium-ingestion`
+- `reporium-audit`
+- `reporium-metrics`
+- `reporium-roadmap`
+- `reporium-events`
+
+### Repos Currently Operating on `main` Only
+
+- `reporium-security`
+- `reporium-scoring`
+- `reporium-system-design`
+- `reporium-dataset`
+
+This should be treated as current suite practice, not an aspirational future-only policy.
 
 ---
 
 ## Fixing Now
 
-- **reporium-ingestion pipeline** — Fix cloud deployment — unblocks categories, summaries, reporium.com usefulness
-- **10K repos milestone** — Expand GitHub fetcher to discover repos beyond perditioinc forks
+- commit-data and enrichment follow-through work across the ingestion pipeline
+- taxonomy expansion and category quality
+- keeping roadmap, metrics, and audit documentation aligned with current suite reality
 
 ---
 
-## Next Up — end of March 2026
+## Near-Term Focus
 
-- 10K repos tracked in reporium-db
-- Categories working (requires ingestion pipeline fix)
-- Redis cache enabled on reporium-api
-
----
-
-## Target: end of April 2026
-
-- 100K repos tracked
-- repo-intelligence library live on PyPI
-- reporium frontend v2 (Figma-designed)
+- continue scaling discovery and ingestion
+- improve category and enrichment quality
+- wire event-driven automation where the producer/consumer path is actually implemented
+- keep docs and execution state aligned across the suite
 
 ---
 
-## Coming Next
+## Historical Milestones
 
-- [**repo-intelligence**](https://github.com/perditioinc/repo-intelligence) — 0-100 repo scorer: README, activity, community, CI. Pip-installable.
-- **github-ai-trends** — Daily GitHub trending scraper focused on AI repos. Scrapes github.com/trending per language (Python, TypeScript, Rust, Go, C++, Jupyter Notebook) for daily, weekly, and monthly time periods. Stores one timestamped snapshot per day. Feeds new repo candidates to reporium-db. Does not do AI enrichment — discovery only.
-- **reporium frontend v2** — Figma-designed UI: faster, cleaner, better filtering
-- **reporium enterprise** — Self-hosted for internal repos
+### March 2026 Milestone: 826-Repo Foundation
+
+- the original ingestion/enrichment milestone processed 826 repos
+- this is a historical platform milestone, not the current live total
+
+### March 2026 Expansion Snapshot: 1,406 Repos
+
+- some March 2026 planning documents referenced a 1,406-repo expansion snapshot
+- treat that as a dated planning snapshot, not the current canonical total
+
+### Naming History
+
+- `reporium-scoring` is the current repo name
+- `repo-intelligence` is a former name that should only appear when explicitly labeled as historical
 
 ---
 
-## Changelog
+## Changelog Highlights
 
 ### v0.4.0 - 2026-03-20
-reporium-api deployed to Cloud Run (0 repos live), reporium-events Pub/Sub system, reporium-audit nightly health checks, perditio-devkit shared tooling, build counters on all nightly repos, Reporium suite badges across all repos — 167 tests passing
+
+Historical milestone: `reporium-api` deployed to Cloud Run, `reporium-events` introduced, `reporium-audit` nightly checks added, and shared tooling expanded.
 
 ### v0.3.0 - 2026-03-17
-reporium-db, reporium-dataset, reporium-metrics, portfolio, repo-intelligence all launched — 167 tests passing across all repos
+
+Historical milestone: `reporium-db`, `reporium-dataset`, `reporium-metrics`, `portfolio`, and `reporium-scoring` (then named `repo-intelligence`) launched.
 
 ### v0.2.0 - 2026-03-16
-forksync v2 launched on Cloud Run (68s for 818 repos), reporium-ingestion pipeline built — not yet deployed to cloud
+
+Historical milestone: `forksync v2` launched on Cloud Run.
 
 ### v0.1.0 - 2026-03-14
-reporium.com and reporium-api first deployed
 
+Historical milestone: `reporium.com` and `reporium-api` first deployed.
 
 ---
 
-*Platform **v0.4.0** · Last updated: 2026-03-21 · See [CHANGELOG.md](CHANGELOG.md) for version history.*
+*Last updated: 2026-03-24. Use generated outputs from the operational repos for live counts and health.*
