@@ -383,6 +383,21 @@ def _changelog_from_roadmap(changelog: list[dict]) -> str:
     return "\n".join(lines)
 
 
+_BRANCH_STRATEGY = """\
+## Branch Strategy
+
+All Reporium suite repositories follow the same Git Flow:
+
+- **`dev`** — integration branch; all feature branches target `dev`
+- **`main`** — stable branch; `dev` is merged into `main` via **squash merge** for each release
+- Feature branches: `feature/<name>`, merged to `dev` via squash merge
+- Hotfixes: `hotfix/<name>`, merged to both `main` and `dev`
+
+This applies suite-wide: reporium, reporium-api, reporium-db, reporium-ingestion, \
+reporium-scoring, forksync, reporium-audit, reporium-events, perditio-devkit, and this roadmap repo.\
+"""
+
+
 def build_readme(roadmap: dict, stats_map: dict[str, Optional[dict]], generated_at: str) -> str:
     """Assemble the full README from roadmap data and live stats.
 
@@ -443,6 +458,10 @@ def build_readme(roadmap: dict, stats_map: dict[str, Optional[dict]], generated_
 
 ---
 
+{_BRANCH_STRATEGY}
+
+---
+
 {changelog}
 
 ---
@@ -483,6 +502,10 @@ def build_readme(roadmap: dict, stats_map: dict[str, Optional[dict]], generated_
 ---
 
 {backlog_section}
+
+---
+
+{_BRANCH_STRATEGY}
 
 ---
 

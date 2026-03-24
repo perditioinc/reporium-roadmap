@@ -76,14 +76,14 @@
     "deadline": "end of April 2026",
     "items": [
       "100K repos tracked",
-      "repo-intelligence library live on PyPI",
+      "reporium-scoring library live on PyPI",
       "reporium frontend v2 (Figma-designed)"
     ]
   },
   "coming_next": [
     {
-      "name": "repo-intelligence",
-      "repo": "perditioinc/repo-intelligence",
+      "name": "reporium-scoring",
+      "repo": "perditioinc/reporium-scoring",
       "description": "0-100 repo scorer: README, activity, community, CI. Pip-installable."
     },
     {
@@ -121,12 +121,12 @@
     {
       "version": "v0.4.0",
       "date": "2026-03-20",
-      "notes": "reporium-api deployed to Cloud Run ({api_repos_tracked} repos live), reporium-events Pub/Sub system, reporium-audit nightly health checks, perditio-devkit shared tooling, build counters on all nightly repos, Reporium suite badges across all repos — {test_count} tests passing"
+      "notes": "reporium-api deployed to Cloud Run, reporium-events Pub/Sub system, reporium-audit nightly health checks, perditio-devkit shared tooling, build counters on all nightly repos, Reporium suite badges across all repos — live counts shown in Current State above"
     },
     {
       "version": "v0.3.0",
       "date": "2026-03-17",
-      "notes": "reporium-db, reporium-dataset, reporium-metrics, portfolio, repo-intelligence all launched — {test_count} tests passing across all repos"
+      "notes": "reporium-db, reporium-dataset, reporium-metrics, portfolio, reporium-scoring all launched — live test count shown in Current State above"
     },
     {
       "version": "v0.2.0",
