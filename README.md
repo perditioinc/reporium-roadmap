@@ -16,11 +16,11 @@
 ### Working
 
 - [**reporium.com v0.7.0**](https://reporium.com) — Live — 1406 repos. AskBar fully functional (natural language Q&A over repo library via /intelligence/ask). Progressive loading: owned.json (690KB, 16 repos) renders in ~0.5s, full library.json (5.3MB) merges in background. Repo cards fixed: system tags, builder badges, category aliases, timeline guard. Filter bar clean. MetricsSidebar fixed. AI Dev Coverage all green. CI green, GitHub Pages deployed. 197 tests passing.  
-  last commit: `2026-03-24`
+  last commit: `2026-03-25`
 - [**reporium-api v1.6.0**](https://reporium-api-573778300586.us-central1.run.app/docs) — Cloud Run revision 00027-2v5. 1406 repos, 6209 knowledge graph edges. /intelligence/ask public endpoint (10/min + 100/day rate limit). Prompt injection + SQL injection fixed. CORS restricted to reporium.com origins. CI/CD auto-deploy on push to main. DB at migration 004 (head): is_private + stargazers_count columns. GH_TOKEN wired for nightly commit stats fetch. 32 unit tests passing.  
-  last commit: `2026-03-24`
+  last commit: `2026-03-25`
 - [**reporium-ingestion v1.3.0**](https://github.com/perditioinc/reporium-ingestion) — 1406/1406 repos enriched. 14K tags, 2K pmSkills, 918 industries, 825 builders, 4920 categories. fetch_commit_stats.py wired into nightly_enrichment.yml CI. backfill_fork_dates.py ran — all 1390 forks populated.  
-  last commit: `2026-03-24`
+  last commit: `2026-03-25`
 - [**forksync v2**](https://github.com/perditioinc/forksync) — Cloud Run nightly sync, SYNC_REPORT.md committed after each run.  
   last commit: `2026-03-23`
 - [**reporium-db**](https://github.com/perditioinc/reporium-db) — Nightly sync active, 1406 repos tracked.  
@@ -100,4 +100,4 @@ reporium.com and reporium-api first deployed.
 
 ---
 
-*Platform **v0.7.0** · Last updated: 2026-03-24 · See [CHANGELOG.md](CHANGELOG.md) for version history.*
+*Platform **v0.7.0** · Last updated: 2026-03-25 · See [CHANGELOG.md](CHANGELOG.md) for version history.*
