@@ -22,13 +22,13 @@
 - [**reporium-ingestion v1.3.0**](https://github.com/perditioinc/reporium-ingestion) — 1406/1406 repos enriched. 14K tags, 2K pmSkills, 918 industries, 825 builders, 4920 categories. fetch_commit_stats.py wired into nightly_enrichment.yml CI. backfill_fork_dates.py ran — all 1390 forks populated.  
   last commit: `2026-03-30`
 - [**forksync v2**](https://github.com/perditioinc/forksync) — Cloud Run nightly sync, SYNC_REPORT.md committed after each run.  
-  last commit: `2026-03-23`
+  last commit: `2026-04-01`
 - [**reporium-db**](https://github.com/perditioinc/reporium-db) — Nightly sync active, 1406 repos tracked.  
-  last commit: `2026-03-30`
+  last commit: `2026-03-31`
 - [**reporium-events**](https://github.com/perditioinc/reporium-events) — GCP Pub/Sub topic 'reporium-events' live. Event schemas: sync.completed, db.synced, ingestion.completed, repo.added, repo.updated, health.check, build.failed, api.deployed. Publisher client with atomic build_number counter in Firestore. Validated payload schemas.  
   last commit: `2026-03-23`
 - [**reporium-audit**](https://github.com/perditioinc/reporium-audit) — Nightly 8am UTC audit of all platform components, AUDIT_REPORT.md auto-generated.  
-  last commit: `2026-03-30`
+  last commit: `2026-03-31`
 - [**perditio-devkit**](https://github.com/perditioinc/perditio-devkit) — Shared tooling: badges, GitHub client, file utilities — used by all repos.  
   last commit: `2026-03-23`
 
@@ -100,4 +100,4 @@ reporium.com and reporium-api first deployed.
 
 ---
 
-*Platform **v0.7.0** · Last updated: 2026-03-31 · See [CHANGELOG.md](CHANGELOG.md) for version history.*
+*Platform **v0.7.0** · Last updated: 2026-04-01 · See [CHANGELOG.md](CHANGELOG.md) for version history.*
