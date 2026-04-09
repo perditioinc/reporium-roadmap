@@ -4,7 +4,7 @@
 > This document preserves roadmap context and historical milestones.
 > It is not the canonical live metrics source.
 
-Last manually updated: 2026-03-24
+Last manually updated: 2026-04-09
 
 ---
 
@@ -93,6 +93,48 @@ This is the actual mixed branch strategy today.
 - ingestion and backfill follow-through
 - benchmark and performance visibility
 - documentation consistency across roadmap, metrics, audit, and generated status outputs
+- **knowledge graph data trust** — repo_dependencies rewiring, repo_edges schema, temporal history, audit regression checks
+
+---
+
+## Planned Features — Knowledge Graph Track
+
+### In Progress (PR 3 / Knowledge Graph Data Trust)
+
+| Item | Description | Status | PRs |
+|---|---|---|---|
+| Tag canonicalization layer | Fuzzy-match AI-generated `integration_tags` to canonical vocabulary (~200 tags) before building COMPATIBLE_WITH edges | in-progress | reporium-ingestion #42, reporium-api #324 |
+| Multi-signal activity score | Replace single-formula score with log2-based components: commits velocity (max 60), star log-scale (max 15), forks log-scale (max 15), recency bonus (10). Store breakdown in `activity_score_breakdown` JSONB | in-progress | reporium-ingestion #42 |
+| Velocity views | `v_edge_count_by_run` and `v_repo_activity_trend` for operational monitoring and regression detection | in-progress | reporium-api #324 (migration 035) |
+| Knowledge graph nightly cron | Standalone cron at 08:30 UTC (90 min after enrichment) with crash resume via `RESUME_CRASHED_RUN` | in-progress | reporium-ingestion #42 |
+
+### Near-term (PR 1 / KAN-101–103)
+
+| Item | Description | Repo |
+|---|---|---|
+| DEPENDS_ON fix | Rewire dependency writer from dropped `repos.dependencies` column to `repo_dependencies` table | reporium-ingestion, reporium-api |
+| `repo_edges` schema | Proper migration (033) with `confidence`, `metadata`, `ingest_run_id`, UNIQUE constraint | reporium-api |
+| `repo_edges_history` | Append-only archive written before each rebuild; enables temporal edge diffs | reporium-api |
+| Extend `ingest_runs` | Add `checkpoint_data`, `prev_edge_counts`, `git_sha`, `triggered_by` | reporium-api |
+| Nightly graph build | GitHub Actions workflow chained after nightly enrichment | reporium-ingestion |
+| Edge-count audit | Automated regression check: alert if DEPENDS_ON = 0 or any type drops > 20% | reporium-audit |
+
+### Medium-term
+
+| Item | Description |
+|---|---|
+| Semantic proximity map | UMAP endpoint projecting 384-dim embeddings to 2D; canvas visualisation in the frontend with zoom + cluster labels |
+| Temporal layer | Time-slider UI replaying `repo_edges_history` to show how the graph evolved; backend query: `WHERE valid_from <= $ts AND valid_until > $ts` |
+| Append-only embeddings | Version `repo_embeddings` rows instead of overwriting; enables embedding drift detection over time |
+
+### Long-term (Graph Data Trust Track)
+
+| Item | Description |
+|---|---|
+| Atomic graph rebuild | Staging table swap: build edges into `repo_edges_staging`, then rename atomically — zero-downtime rebuilds |
+| Edge confidence calibration | Tune confidence thresholds from clickstream feedback (which edges users follow) |
+| Cross-repo dependency graph | Extend DEPENDS_ON to package registries (PyPI, npm) for repos not tracked in Reporium |
+| MCP temporal surface | Expose `repo_edges_history` through MCP `get_knowledge_graph` so AI agents can reason about graph evolution |
 
 ---
 

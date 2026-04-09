@@ -1,7 +1,7 @@
 {
   "vision": "Track every meaningful AI development tool on GitHub. 10K repos by end of March 2026. 100K by end of April 2026.",
   "version": "v0.4.0",
-  "as_of": "2026-03-20",
+  "as_of": "2026-04-09",
   "current_state": {
     "working": [
       {
@@ -81,6 +81,34 @@
     ]
   },
   "coming_next": [
+    {
+      "name": "tag-canonicalization-layer",
+      "description": "Fuzzy-match AI-generated integration_tags to canonical vocabulary (~200 tags) before building COMPATIBLE_WITH edges. Prevents tag proliferation and improves edge quality.",
+      "status": "in-progress",
+      "prs": ["reporium-ingestion#42", "reporium-api#324"],
+      "track": "knowledge-graph-data-trust"
+    },
+    {
+      "name": "multi-signal-activity-score",
+      "description": "Replace single-formula activity score with log2-based components: commits velocity (max 60), star log-scale (max 15), forks log-scale (max 15), recency bonus (10). Store per-signal breakdown in activity_score_breakdown JSONB on repos table.",
+      "status": "in-progress",
+      "prs": ["reporium-ingestion#42"],
+      "track": "knowledge-graph-data-trust"
+    },
+    {
+      "name": "velocity-views",
+      "description": "v_edge_count_by_run and v_repo_activity_trend database views for operational monitoring and regression detection. Added in migration 035.",
+      "status": "in-progress",
+      "prs": ["reporium-api#324"],
+      "track": "knowledge-graph-data-trust"
+    },
+    {
+      "name": "knowledge-graph-nightly-cron",
+      "description": "Standalone nightly cron at 08:30 UTC (90 minutes after enrichment completes) with crash resume support via RESUME_CRASHED_RUN environment flag.",
+      "status": "in-progress",
+      "prs": ["reporium-ingestion#42"],
+      "track": "knowledge-graph-data-trust"
+    },
     {
       "name": "reporium-scoring",
       "repo": "perditioinc/reporium-scoring",
