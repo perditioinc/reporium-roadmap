@@ -92,4 +92,4 @@ reporium.com and reporium-api first deployed.
 
 ---
 
-*Platform **v0.7.0** · Last updated: 2026-04-13 · See [CHANGELOG.md](CHANGELOG.md) for version history.*
+*Platform **v0.7.0** · Last updated: 2026-04-14 · See [CHANGELOG.md](CHANGELOG.md) for version history.*
