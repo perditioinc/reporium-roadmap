@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import httpx
 import respx
@@ -17,6 +18,8 @@ from generate import (
     build_readme,
     load_roadmap,
 )
+
+_ROADMAP_PATH = Path(__file__).resolve().parent.parent / "roadmap.json"
 
 _DB_INDEX_URL = "https://raw.githubusercontent.com/perditioinc/reporium-db/main/data/index.json"
 
@@ -279,6 +282,64 @@ async def test_count_repo_tests_returns_zero_on_missing_tests_dir():
     async with httpx.AsyncClient(timeout=15) as client:
         count = await _count_repo_tests(client, "tok", "perditioinc/reporium-db")
     assert count == 0
+
+
+# ── Live roadmap.json contract (pins 2026-04-24 sync) ───────────────────────
+#
+# These tests assert facts that the 2026-04-24 sync deliberately recorded.
+# They guard against silent regressions of the source-of-truth file.
+
+
+def _live_roadmap() -> dict:
+    return json.loads(_ROADMAP_PATH.read_text(encoding="utf-8"))
+
+
+def test_live_roadmap_as_of_is_set():
+    """roadmap.json must declare an as_of date (sync hygiene)."""
+    roadmap = _live_roadmap()
+    assert roadmap.get("as_of"), "roadmap.json must have an as_of date"
+
+
+def test_live_roadmap_includes_reporium_mcp():
+    """reporium-mcp must be in current_state.working — it is live on Cloud Run."""
+    roadmap = _live_roadmap()
+    working_repos = {item.get("repo") for item in roadmap["current_state"]["working"]}
+    assert "perditioinc/reporium-mcp" in working_repos
+
+
+def test_live_roadmap_db_backend_is_cloud_sql():
+    """DB backend must reflect the 2026-04-15 Neon → Cloud SQL migration."""
+    roadmap = _live_roadmap()
+    backend = roadmap.get("platform_metrics", {}).get("db_backend", "")
+    assert "Cloud SQL" in backend, f"expected Cloud SQL, got: {backend!r}"
+
+
+def test_live_roadmap_events_repo_marked_public():
+    """reporium-events must be in current_state.working (it was published to GitHub)."""
+    roadmap = _live_roadmap()
+    working_repos = {item.get("repo") for item in roadmap["current_state"]["working"]}
+    assert "perditioinc/reporium-events" in working_repos
+
+
+def test_live_roadmap_records_historical_targets():
+    """Original 10K/100K corpus targets must be retained as historical_targets,
+    not silently rewritten."""
+    roadmap = _live_roadmap()
+    historical = roadmap.get("historical_targets", [])
+    assert historical, "historical_targets must be non-empty after sync"
+    assert any(
+        "10K" in entry.get("claim", "") or "100K" in entry.get("claim", "")
+        for entry in historical
+    ), "original 10K/100K targets must be preserved in historical_targets"
+
+
+def test_live_roadmap_renders_via_build_readme():
+    """The live roadmap.json must render through build_readme without keyerrors."""
+    roadmap = _live_roadmap()
+    readme = build_readme(roadmap, {}, "2026-04-24")
+    assert "## Current State" in readme
+    assert "reporium-mcp" in readme
+    assert "Cloud SQL" in readme
 
 
 @respx.mock
