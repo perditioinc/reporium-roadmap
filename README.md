@@ -23,7 +23,7 @@
 - [**reporium-mcp**](https://github.com/perditioinc/reporium-mcp) — MCP server giving Claude/Workato direct access to the live library. 18 tools across 7 modules (search, taxonomy, intelligence, graph, quality, repos, …). HTTP bridge deployed to Cloud Run via cloudbuild.http.yaml (KAN-163). Migrated to Workload Identity Federation; deploy auth probe replaced ID-token smoke test. Main HEAD `d5b6d11`. Used by 3 Workato recipes.
 - [**reporium-ingestion v1.3.0**](https://github.com/perditioinc/reporium-ingestion) — Cloud Run Job for nightly enrichment proven end-to-end (181 repos / 0 errors on first scheduled fire). Legacy GitHub Actions enrichment cron removed (PR #65). Graph-build CI surfaces Cloud Run Job diagnostics on failure (PR #66). Main HEAD `4c5f2f3`; tag v1.3.0 at `cd9fb16`.
 - [**forksync**](https://github.com/perditioinc/forksync) — Cloud Run nightly sync. Cache migrated from Cloud Memorystore to Upstash Redis REST API (PR #1). SYNC_REPORT.md still committed after each run.
-- [**reporium-db v1.0.0**](https://github.com/perditioinc/reporium-db) — Nightly sync. 1,848 repos in published index.json across 24+ languages. 403 retry with 300s Retry-After cap (PR #10) live since 2026-04. Stronger GraphQL 5xx resilience patch (`f3a099e`) is in a feature branch; not yet on main as of 2026-04-24.
+- [**reporium-db v1.0.0**](https://github.com/perditioinc/reporium-db) — Nightly sync. 1,848 repos in published index.json across 24+ languages (local clone 2026-04-22). 403 retry with 300s Retry-After cap (PR #10, `53b7c44`) live since 2026-04. GraphQL 5xx resilience + correct checkpoint cursor landed on main via PR #11 (merge `9c0dad3`, merged 2026-04-23T04:56Z). Main HEAD `5816999` (build, 2026-04-24).
 - [**reporium-events v1.0.0**](https://github.com/perditioinc/reporium-events) — Now public on GitHub (was local-only as of 2026-03). GCP Pub/Sub topic 'reporium-events' live. 8 event schemas (sync.completed, db.synced, ingestion.completed, repo.added, repo.updated, health.check, build.failed, api.deployed). Async Firestore transactional fix shipped (PR #2). Main HEAD `81a51fd`.
 - [**reporium-audit**](https://github.com/perditioinc/reporium-audit) — Nightly 8am UTC audit of all platform components, AUDIT_REPORT.md auto-generated. Knowledge graph edge count regression check added (4ddc6dd).
 - [**perditio-devkit**](https://github.com/perditioinc/perditio-devkit) — Shared tooling: badges, GitHub client, file utilities, reusable test failure workflow. Used by all suite repos.
@@ -49,7 +49,6 @@
 - Land FAQ product decision (PR #272)
 - Audit suite hardening + Workato recipe validation (lanes 9–10 from today's dispatch)
 - Ask/FAQ UX safety design spec (lane 11)
-- Land reporium-db `f3a099e` GraphQL 5xx resilience patch from feature branch onto main
 
 ---
 
@@ -76,7 +75,7 @@ Source of truth is `roadmap.json → solved_lanes` plus `project_reporium_p2_res
 
 - **conftest teardown flake** (reporium-api) — PR #429 / main commit `8c9a872` (2026-04-24).
 - **Legacy GitHub Actions nightly enrichment cron** (reporium-ingestion) — PR #65 / main commit `4a58b6c` (2026-04-24).
-- **DB sync GraphQL 403 retry-after cap** (reporium-db) — PR #10 / main commit `53b7c44` (2026-04). The 5xx companion (`f3a099e`) is in a feature branch — see Next Up.
+- **DB sync GitHub 403 + GraphQL 5xx resilience** (reporium-db) — PR #10 (`53b7c44`, 2026-04) and PR #11 (merge `9c0dad3`, merged 2026-04-23T04:56Z). Both on main; main HEAD `5816999`.
 - **Neon → Cloud SQL DB migration** (reporium-api) — KAN-120 demo-prep session (2026-04-15).
 - **reporium-events public publication** — GitHub publication + PR #2 Firestore async txn fix (2026-04). Main HEAD `81a51fd`.
 - **reporium-mcp HTTP bridge + Workload Identity Federation** — PRs #12/#13/#14, main HEAD `d5b6d11` (2026-04).
@@ -95,6 +94,9 @@ These are kept here so the original ambition is not silently rewritten:
 ---
 
 ## Changelog
+
+### v0.8.1-roadmap-sync-correction - 2026-04-24
+Correction to v0.8.0-roadmap-sync (same-day, PM follow-up). The 02:10 PDT sync claimed reporium-db's GraphQL 5xx companion fix (`f3a099e`) was on a feature branch only — that was wrong by ~22 hours. PR #11 (`fix(fetcher): GraphQL 5xx resilience — 6 retries, jitter, correct checkpoint`) had already merged to main as commit `9c0dad3` on 2026-04-23T04:56Z. reporium-db evidence updated; solved_lanes entry renamed and now lists both PR #10 and PR #11 as resolved on main. Main HEAD pinned to `5816999` (build, 2026-04-24). The `Land reporium-db f3a099e ...` item has been removed from Next Up because it is already on main.
 
 ### v0.8.0-roadmap-sync - 2026-04-24
 Roadmap sync to validated 2026-04-24 suite reality. Corpus updated 1,406 → 1,856 (live API /library/full). DB backend Neon → Cloud SQL (migrated 2026-04-15, KAN-120). reporium-mcp added to working list (HTTP bridge on Cloud Run, 18 tools, WIF deploy, used by 3 Workato recipes). reporium-events moved from 'local only' to public on GitHub. Alembic head 004 → 039 (039_query_log_query_id). openapi/tag version drift in reporium-api (openapi reports 1.1.0, tag v1.6.0) flagged in not_working. Knowledge-graph edge total marked needs-verification (no current measurement). Per-repo HEAD commits pinned: reporium-api `58ab8cd`, reporium-ingestion `4c5f2f3` (v1.3.0 at `cd9fb16`), reporium-mcp `d5b6d11`, reporium-events `81a51fd`. NullPool-safe /health softened to 'PR #435 open, pending merge'. reporium-db evidence corrected: 403-retry-with-cap (PR #10) is on main; the GraphQL 5xx companion (`f3a099e`) is on a feature branch only. New `solved_lanes` array enumerates 8 already-shipped lanes so future runs do not re-open them. Original 10K/100K corpus targets acknowledged as missed; new targets pending product input.

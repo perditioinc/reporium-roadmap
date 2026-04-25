@@ -46,7 +46,7 @@
       {
         "name": "reporium-db v1.0.0",
         "repo": "perditioinc/reporium-db",
-        "evidence": "Nightly sync. {db_total} repos in published index.json across {db_languages} languages. Stronger GraphQL 5xx resilience landed today (f3a099e). 403 retry with 300s Retry-After cap (PR #10) live since 2026-04."
+        "evidence": "Nightly sync. {db_total} repos in published index.json across {db_languages} languages. GraphQL 5xx resilience + correct checkpoint cursor landed on main via PR #11 (merge commit `9c0dad3`, merged 2026-04-23T04:56Z). 403 retry with 300s Retry-After cap (PR #10, `53b7c44`) live since 2026-04. Main HEAD `5816999` (build, 2026-04-24)."
       },
       {
         "name": "reporium-events v1.0.0",
@@ -152,11 +152,11 @@
         "summary": "`chore(nightly): remove legacy GitHub Actions enrichment cron`. Cloud Run Job is now the sole nightly enrichment path (proven end-to-end 2026-04-22)."
       },
       {
-        "lane": "DB sync GraphQL 403 retry-after cap",
+        "lane": "DB sync GitHub 403 + GraphQL 5xx resilience",
         "repo": "perditioinc/reporium-db",
-        "resolved_by": "PR #10 — main HEAD `53b7c44`",
-        "date": "2026-04",
-        "summary": "`fix: intelligent GitHub 403 retry with 300s Retry-After cap`. The 5xx-resilience companion patch (`f3a099e`) is in a feature branch (`claude/fix/graphql-502-resilience`); it is not yet on main as of 2026-04-24 and is tracked under `next_up`."
+        "resolved_by": "PR #10 (`53b7c44`) + PR #11 (merge `9c0dad3`)",
+        "date": "2026-04 (PR #10) / 2026-04-23 (PR #11)",
+        "summary": "Both reliability fixes are on main: PR #10 (`fix: intelligent GitHub 403 retry with 300s Retry-After cap`, `53b7c44`) and PR #11 (`fix(fetcher): GraphQL 5xx resilience — 6 retries, jitter, correct checkpoint`, merge `9c0dad3`, merged 2026-04-23T04:56Z). Note: the earlier roadmap-sync commit on 2026-04-24 02:10 PDT stated PR #11 was feature-branch-only — that was wrong by ~22 hours; local feature branch `claude/fix/graphql-502-resilience` (commit `f3a099e`) was the source and landed on main as `9c0dad3`."
       },
       {
         "lane": "Neon → Cloud SQL DB migration",
@@ -211,6 +211,11 @@
     }
   ],
   "changelog": [
+    {
+      "version": "v0.8.1-roadmap-sync-correction",
+      "date": "2026-04-24",
+      "notes": "Correction to v0.8.0-roadmap-sync (same-day, PM follow-up). The 02:10 PDT sync claimed reporium-db's GraphQL 5xx companion fix (`f3a099e`) was on a feature branch only — that was wrong by ~22 hours. PR #11 (`fix(fetcher): GraphQL 5xx resilience — 6 retries, jitter, correct checkpoint`) had already merged to main as commit `9c0dad3` on 2026-04-23T04:56Z. reporium-db evidence updated accordingly; solved_lanes entry renamed `DB sync GraphQL 403 retry-after cap` → `DB sync GitHub 403 + GraphQL 5xx resilience` and now lists both PRs as resolved on main. Main HEAD pinned to `5816999` (build, 2026-04-24). No application repos modified. Owned files only: roadmap.json, README.md, CHANGELOG.md, REPORIUM_ROADMAP.md, tests."
+    },
     {
       "version": "v0.8.0-roadmap-sync",
       "date": "2026-04-24",

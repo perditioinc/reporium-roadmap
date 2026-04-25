@@ -1,3 +1,29 @@
+## v0.8.1-roadmap-sync-correction - 2026-04-24
+
+Same-day PM correction to v0.8.0-roadmap-sync (02:10 PDT).
+
+The 02:10 sync said reporium-db's GraphQL 5xx companion fix (`f3a099e`) was on a
+feature branch only and tracked under `next_up`. That was wrong by ~22 hours: PR
+#11 (`fix(fetcher): GraphQL 5xx resilience — 6 retries, jitter, correct
+checkpoint`) merged to main as commit `9c0dad3` at **2026-04-23T04:56Z**. The
+local feature branch `claude/fix/graphql-502-resilience` (commit `f3a099e`) is
+the source; `9c0dad3` is what landed on main.
+
+Changes in this commit:
+- `roadmap.json` working entry for reporium-db rewritten — now points at PR #11
+  / `9c0dad3` and pins main HEAD `5816999` (build, 2026-04-24).
+- `roadmap.json` `solved_lanes` entry renamed `DB sync GraphQL 403 retry-after
+  cap` → **`DB sync GitHub 403 + GraphQL 5xx resilience`**; lists both PR #10
+  (`53b7c44`) and PR #11 (`9c0dad3`) as resolved on main.
+- `README.md` working entry, solved-lanes summary line, and Next Up updated
+  to match. The `Land reporium-db f3a099e GraphQL 5xx resilience patch from
+  feature branch onto main` item has been **removed from Next Up** because it is
+  already on main.
+- New v0.8.1 changelog entry added to both `roadmap.json` and `README.md`.
+
+Owned files only. No application repos modified. Branch-strategy unchanged
+(target `main`, branch `claude/feature/KAN-ROADMAP-reporium-roadmap-sync`).
+
 ## v0.8.0-roadmap-sync - 2026-04-24
 
 Sync of `roadmap.json`, `README.md`, and `REPORIUM_ROADMAP.md` to validated
