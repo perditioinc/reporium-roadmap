@@ -3,8 +3,23 @@
 **Lane**: 13 (release certification + merge queue).
 **Authoritative dispatch**: `.audit/2026-04-25/DISPATCH-SHEET.md` (workspace-level).
 **Supersedes**: `.audit/2026-04-24/release-certification-v3.md` and the 2026-04-24 morning-handoff.
-**Validation basis**: live `gh pr list` + `gh pr view <n> --json statusCheckRollup` + `git log origin/<branch>` for every PR, plus `gh run list` for scheduled workflows. Run 2026-04-25 morning.
+**Validation basis**: live `gh pr list` + `gh pr view <n> --json statusCheckRollup` + `git log origin/<branch>` for every PR, plus `gh run list` for scheduled workflows. Run 2026-04-25 morning, **revalidated mid-morning 2026-04-25** (see §0).
 **Author rule reminder**: this lane does **not** merge, deploy, push to product branches, or rotate secrets. It writes the ledger and the order; the human acts.
+
+---
+
+## 0. Revalidation delta — 2026-04-25 mid-morning
+
+Live state was re-checked against this memo. Deltas relative to the original morning ledger:
+
+1. **`reporium#273` opened at 05:47 UTC and supersedes `#272`.** PR `#273` carries `#272`'s commit verbatim plus an ~80-LOC client-side spend-surface mitigation in `src/components/FAQPanel.tsx` (shared `reporium_ask_timestamps` wallet — same 10/min·100/day cap as AskBar — and a 1 h answer cache keyed by question text). It is `MERGEABLE / CLEAN`, with `lint-and-build`, `security`, `Vercel`, and `Vercel Preview Comments` all `SUCCESS`. PR body explicitly directs: "close #272 in favor of this branch, OR cherry-pick `7ab8e64` onto `claude/feature/faq-page` and merge that." Recommended: **close #272 as superseded, merge #273**.
+2. **Spend-surface mitigation is no longer deferred.** The "hold the public `/faq` announcement until the spend-surface mitigation lands" gate from the original ledger is **satisfied by #273** (client wallet + cache shipped in the same PR). The "server-side proxy" item (token-in-bundle full fix) remains tracked as `KAN-LATER-2`; it is not a launch blocker.
+3. **Lane jira drafts now exist** for L1, L2, L3, L4, L5, L7, L8, L9, L10. The §8 organizational gap noted in the morning ledger has largely closed during the day. Updated lane status reflected in §8 below.
+4. **Workato local branch state**: PR #1 HEAD remains `7604755` on remote (`Perditio-Labs/perditio-workato-integration`). Local `claude/feature/KAN-DRAFT-workato-reporium-validation` carries `81c98c7` + `a5c6468` ahead. Action unchanged: author must push.
+5. **No new red CI** since the morning ledger. `#435` still UNSTABLE; all other `reporium-api` PRs still CLEAN. Scheduled workflows on `main` (`Nightly Graph Build` + `data-quality.yml`) still red — same operations causes.
+6. **Base-branch policy item for `reporium`** (CLAUDE.md says `dev`, dispatch says `main`) is still unresolved, but #273 also targets `main`, so the operational decision is the same as for #272: pick the policy and merge.
+
+The remainder of this memo has been edited in place to reflect these deltas. The §6 morning-handoff actions are the operative checklist.
 
 ---
 
@@ -12,9 +27,11 @@
 
 The 2026-04-24 wave landed mostly clean. The single red item that worried us yesterday — `reporium-api#435` (`/health` NullPool) — was correctly **resupplied as `#441`**, which is now the green replacement (`MERGEABLE/CLEAN`, all 5 checks SUCCESS). #435 itself is still red and must be **closed as superseded, not merged**.
 
+The FAQ surface in `reporium` is now also a **superseded → replacement** pair: `#272` is the original, `#273` is the green replacement that bundles the client-side spend-surface mitigation (shared AskBar wallet + 1 h answer cache). Merge #273; close #272.
+
 Two scheduled workflows on `reporium-api` and `reporium-ingestion` `main` remain red. They are *not* code blockers — both are operations work (secret rotation + a PR-#440 dependency).
 
-There are now nine open PRs across six repositories. Five are queue-ready in `reporium-api`, one is the supersession close-out, one is a green decision-only PR in `reporium`, and three are doc PRs in `reporium-roadmap`. Two `reporium-audit` PRs (#11, #12) are open with no CI configured — they are review-by-reading. `perditio-workato-integration#1` is still incomplete (a local commit on the L10 author's machine has not been pushed).
+There are now ten open PRs across six repositories. Five are queue-ready in `reporium-api`, one is the `#435` close-out, two are a `#272`→`#273` close-out + green merge in `reporium`, and three are doc PRs in `reporium-roadmap`. Two `reporium-audit` PRs (#11, #12) are open with no CI configured — they are review-by-reading. `perditio-workato-integration#1` is still incomplete (a local commit on the L10 author's machine has not been pushed).
 
 ---
 
@@ -32,16 +49,16 @@ Source: `gh pr view <n> --json mergeable,mergeStateStatus,statusCheckRollup` aga
 | **#440** | reporium-api | fix(data-quality): pass X-Admin-Key to /metrics/data-quality | main | claude/feature/KAN-XXX-data-quality-verification | .github/workflows/data-quality.yml, scripts/quality_gates.py |
 | **#434** | reporium-api | fix(evaluation): surface hn_mentions_count (#369) | main | fix/evaluation-hn-mentions | app/routers/repos.py, tests/test_pros_cons.py |
 | **#439** | reporium-api | test(ask): add forbidden_repos primitive to golden-set gate (#367) | main | fix/ask-gate-forbidden-repos-367 | tests/golden_set_ask.yaml, tests/test_ask_golden_numeric.py |
-| **#272** | reporium | feat(faq): add /faq page rendering every curated Ask suggestion | main | claude/feature/faq-page | src/app/faq/page.tsx, src/components/FAQPanel.tsx, src/components/StickyNavBar.tsx |
+| **#273** | reporium | feat(faq): /faq + client spend-surface mitigation (KAN-272, supersedes #272) | main | claude/feature/KAN-272-faq-spend-surface | src/app/faq/page.tsx, src/components/FAQPanel.tsx, src/components/StickyNavBar.tsx, .audit/2026-04-{24,25}/* |
 | **#67** | reporium-ingestion | feat(backfill): no-tag fork tag-recovery via upstream README + topics | dev | claude/feature/KAN-TBD-taxonomy-backfill-completion | (CI: test SUCCESS) |
 
-All eight: `mergeable=MERGEABLE`, `mergeStateStatus=CLEAN`. The `reporium-api` five also carry: `ask-quality-gate=SUCCESS`, `test=SUCCESS`, `migration-smoke=SUCCESS`. `reporium#272` carries `lint-and-build=SUCCESS`, `security=SUCCESS`, `Vercel Preview Comments=SUCCESS`.
+All eight: `mergeable=MERGEABLE`, `mergeStateStatus=CLEAN`. The `reporium-api` five carry: `ask-quality-gate=SUCCESS`, `test=SUCCESS`, `migration-smoke=SUCCESS`. `reporium#273` carries `lint-and-build=SUCCESS`, `security=SUCCESS`, `Vercel=SUCCESS`, `Vercel Preview Comments=SUCCESS`. `reporium#272` is also CLEAN but is **superseded** — see §2.4; do not merge it.
 
 ### 2.2 Needs human review before merge (mergeable but governance/policy gates apply)
 
 | PR | Repo | Why "needs review" |
 |---|---|---|
-| **#272** | reporium | Already CLEAN, but base-branch policy is unresolved (`reporium/CLAUDE.md` says `dev`, dispatch+remote say `main`; PR is targeted at `main`). The Ask spend-surface mitigation (shared-rate counter + answer cache) is deferred. **Pick a base-branch policy and hold the public `/faq` announcement until the mitigation lands** (DB pool is at ceiling — see `project_ask_sprint1_apr22.md`). |
+| **#273** | reporium | CLEAN. Two governance items: (a) base-branch policy is unresolved (`reporium/CLAUDE.md` says `dev`, dispatch+remote say `main`; PR is targeted at `main`); (b) the long-term server-side proxy fix is tracked as `KAN-LATER-2`, not in scope here. The client-side mitigation (shared 10/min·100/day wallet + 1 h answer cache) is in this PR, so the public `/faq` announcement is *no longer gated* by mitigation. Decision needed: pick the base branch and merge. |
 | **#7** | reporium-roadmap | `docs(release-cert): 2026-04-24 post-wave certification snapshot`. v1 mirror — **stale vs v3**. Either close-and-replace, or push v3 onto its branch and re-review. |
 | **#8** | reporium-roadmap | `KAN-ROADMAP: Ask/FAQ roadmap decision package`. Bundles L5 (#272) + L11 (Ask UX safety) outcomes. Reviewable as-is. |
 | **#9** | reporium-roadmap | `KAN-DRAFT: production safety checklist`. Reviewable as-is; mirrors `production-safety-checklist.md`. |
@@ -60,6 +77,7 @@ All eight: `mergeable=MERGEABLE`, `mergeStateStatus=CLEAN`. The `reporium-api` f
 | PR | Repo | Superseded by | Reason |
 |---|---|---|---|
 | **#435** | reporium-api | **#441** | #441's diff is a strict superset of #435 (adds NullPool guard); #441 is CLEAN, #435 is UNSTABLE. Memory observations 4431/4438 confirm fix integration into #441's branch. |
+| **#272** | reporium | **#273** | #273's diff is #272 verbatim plus an ~80-LOC client-side spend-surface mitigation (`FAQPanel.tsx` shared wallet + 1 h cache) and audit docs. Both are CLEAN, but #273 is the merge candidate per its own PR body. Close #272; merge #273. |
 | 2026-04-24 dispatch sheets v1–v4 | workspace | `.audit/2026-04-25/DISPATCH-SHEET.md` | Carry-forward complete; new dispatch is authoritative. |
 | 2026-04-24 release-certification-v3.md | workspace | this memo | Delta: #435 path resolved via #441 (Option B from yesterday's handoff). |
 
@@ -105,12 +123,13 @@ Step 7 — merge #439 to main                          (forbidden_repos test pri
 ### Off-critical-path
 
 ```
-Step 8  — decide reporium#272 base-branch policy, then merge        (FAQ page, deferred mitigation)
+Step 8a — close reporium#272 as superseded by #273                   (Lane 5 close-out; no merge)
+Step 8b — decide reporium#273 base-branch policy, then merge         (FAQ + mitigation)
 Step 9  — close roadmap#7 (stale v1) OR push v3 onto its branch
 Step 10 — merge roadmap#8 (Ask/FAQ decision package)                 (no CI; review-by-reading)
 Step 11 — merge roadmap#9 (production safety checklist)
 Step 12 — review-by-reading reporium-audit#11 + #12, merge in order  (no CI)
-Step 13 — ask Workato author to push 81c98c7, then review #1
+Step 13 — ask Workato author to push 81c98c7 + a5c6468, then review #1
 Step 14 — merge reporium-ingestion#67 to dev at owner discretion     (off-lane, green)
 ```
 
@@ -120,7 +139,8 @@ Step 14 — merge reporium-ingestion#67 to dev at owner discretion     (off-lane
 - `#440 → data-quality.yml dispatch` (workflow recovery)
 - `secret rotation (ops) → Nightly Graph Build recovery` (no PR — ops action)
 - `Lane 14 (close #435) ← #441 merged` (close after #441 lands)
-- `reporium#272 ← base-branch policy decision` (governance gate)
+- `reporium#272 close ← #273 merged` (close after #273 lands)
+- `reporium#273 ← base-branch policy decision` (governance gate)
 - `roadmap#7 ← v3 cert (this memo)` (must rebase or close)
 
 ---
@@ -130,11 +150,12 @@ Step 14 — merge reporium-ingestion#67 to dev at owner discretion     (off-lane
 Each item below is supported by live evidence. Do not merge any of these in their current state.
 
 1. **`reporium-api#435`** — `mergeStateStatus=UNSTABLE`; `test` job FAILURE x2. Fix lives on a sibling branch (now PR #441). Action: **close as superseded**, do not push the fix onto #435's branch.
-2. **`reporium#272`** — green, but holds until: (a) base-branch policy resolved between `CLAUDE.md` (`dev`) and dispatch (`main`); (b) public `/faq` announcement deferred until the spend-surface mitigation PR lands. Mergeability ≠ merge-readiness.
-3. **`reporium-roadmap#7`** — stale v1 cert mirror. Do not merge as-is; either close or refresh to v3 first.
-4. **`perditio-workato-integration#1`** — incomplete relative to L10 deliverable; missing pushed commit `81c98c7`. Do not merge until author pushes the validation commit.
-5. **Anything to `reporium-api/main` after #438 merges without rebasing #440 / #434 / #439** — those branch off pre-#436 main and will conflict on `deploy.yml` if not refreshed in step order.
-6. **`reporium-audit#11` and `#12`** — no CI configured; not a hard block, but treat as "merge only after the L4 RCA + L11 §7 cross-reference review is recorded" (per Lane 9 stop conditions).
+2. **`reporium#272`** — superseded by `#273`. CLEAN, but **must not merge** — its merge would land #272 without the spend-surface mitigation that #273 carries on top. Action: **close as superseded by #273**.
+3. **`reporium#273`** — CLEAN, but holds until base-branch policy is resolved between `CLAUDE.md` (`dev`) and dispatch (`main`). Mergeability ≠ merge-readiness.
+4. **`reporium-roadmap#7`** — stale v1 cert mirror. Do not merge as-is; either close or refresh to v3 first.
+5. **`perditio-workato-integration#1`** — incomplete relative to L10 deliverable; missing pushed commits `81c98c7` + `a5c6468`. Do not merge until author pushes the validation commits (remote is `Perditio-Labs/perditio-workato-integration`, not `perditioinc`).
+6. **Anything to `reporium-api/main` after #438 merges without rebasing #440 / #434 / #439** — those branch off pre-#436 main and will conflict on `deploy.yml` if not refreshed in step order.
+7. **`reporium-audit#11` and `#12`** — no CI configured; not a hard block, but treat as "merge only after the L4 RCA + L11 §7 cross-reference review is recorded" (per Lane 9 stop conditions).
 
 ---
 
@@ -178,17 +199,20 @@ Run after every merge in the queue, and *all of these* after Step 7. If any item
 - [ ] `/repos/{id}/evaluation` returns `hn_mentions_count` (integer or `null`) for: a HN-popular repo, a HN-unknown repo, a brand-new repo. (#434 acceptance.)
 - [ ] No regression in stars-based ranking introduced by Sprint 1 (#412 already merged).
 
-### 5.6 Public spend surface (after #272 lands, and BEFORE any public announcement)
+### 5.6 Public spend surface (after #273 lands)
 
-- [ ] `/faq` page renders every curated Ask suggestion as a static link, **not** as a hot-fired Ask request.
+- [ ] `/faq` page renders every curated Ask suggestion as a card; expanding a card calls `/intelligence/ask` exactly once (cache miss) or zero times (cache hit). No prefetch on page load.
 - [ ] DB pool saturation: `pool_size=5+2` ceiling is not exceeded for ≥ 1 h after merge during normal traffic. (`project_neon_quota_migration.md` baseline.)
-- [ ] Shared-rate counter and 1 h answer cache mitigation PR is filed *before* any public `/faq` announcement (HN, LinkedIn, etc.). See `pr-272-faq-decision.md`.
-- [ ] No JS path on `/faq` triggers a real `/intelligence/ask` round-trip without a user click.
-- [ ] Vercel preview deploy passes the same checks as prod build (Vercel Preview Comments check is currently SUCCESS).
+- [ ] Shared wallet check: with `localStorage.reporium_ask_timestamps` pre-populated to 10 entries in the last minute, expanding a fresh FAQ card shows the friendly per-minute message and **fires zero** `/intelligence/ask` calls. (Confirms `FAQPanel.tsx` `readBudget()` shares state with AskBar.)
+- [ ] Cache: reload `/faq`, re-open the same card → no new network call (cache hit on `reporium_faq_answer_cache`, 1 h TTL).
+- [ ] Existing AskBar surface (`/ask`) still respects the same wallet — no regression.
+- [ ] Vercel preview deploy passes the same checks as prod build (Vercel Preview Comments check on #273 is currently SUCCESS).
+- [ ] Server-side proxy fix (`KAN-LATER-2`) is filed and tracked but **not** a launch blocker for `/faq`.
 
 ### 5.7 Process hygiene (superseded PRs + placeholder branches)
 
 - [ ] `reporium-api#435` closed with the close comment linking to #441 and citing the supersession evidence (Lane 14 close-out; no force-push to that branch).
+- [ ] `reporium#272` closed with the close comment linking to #273 (Lane 5 close-out; no force-push to `claude/feature/faq-page`).
 - [ ] No `KAN-DRAFT-*` placeholder branch ever merged into a default branch — replace with real `KAN-<id>` once minted in JIRA. Today the placeholders in flight: `KAN-DRAFT-workato-activation`, `KAN-DRAFT-2026-04-25-release-certification` (this lane), `KAN-DRAFT-production-safety-checklist`, `KAN-DRAFT-release-certification` (older roadmap branch — close once #7 is resolved), `KAN-XXX-data-quality-verification` (PR #440 branch — rename or accept that the merge commit will record the placeholder).
 - [ ] `reporium-roadmap#7` is closed or refreshed; stale v1 must not co-exist with v3 on `main`.
 - [ ] No memory-driven "it's already merged" claims accepted without `gh pr view` + `git log` evidence (yesterday's lesson — see `project_reporium_p2_resolved_apr24.md` and `morning-handoff-2026-04-25.md` warning).
@@ -257,12 +281,20 @@ gcloud run jobs execute reporium-graph-build \
 # next: 2026-04-26 10:00 UTC
 ```
 
-### Action 3 — Resolve `reporium` base-branch policy *before* merging #272
+### Action 3 — Close #272, then resolve `reporium` base-branch policy *before* merging #273
 
-- **Path A** (keep #272 on `main`): update `reporium/CLAUDE.md` to declare `main` as the integration branch. Then merge #272.
-- **Path B** (re-target #272 to `dev`): change PR base to `dev`, update DISPATCH-SHEET §1 to record `reporium` integrates on `dev`. Then merge.
+```bash
+# 1. close #272 as superseded by #273 (no merge)
+gh pr close 272 -R perditioinc/reporium \
+  --comment "Superseded by #273. #273 carries this PR's commit verbatim plus an ~80-LOC client-side spend-surface mitigation in FAQPanel.tsx (shared AskBar wallet 10/min·100/day + 1h answer cache). Closing per release-cert lane 13 (2026-04-25)."
+```
 
-Either path is fine. **Do not merge #272 without picking one.** After merge, hold the public `/faq` announcement until the spend-surface mitigation PR lands.
+Then pick a base-branch policy and merge #273:
+
+- **Path A** (keep #273 on `main`): update `reporium/CLAUDE.md` to declare `main` as the integration branch. Then `gh pr merge 273 -R perditioinc/reporium --squash --delete-branch`.
+- **Path B** (re-target #273 to `dev`): change PR base to `dev`, update DISPATCH-SHEET §1 to record `reporium` integrates on `dev`. Then merge.
+
+Either path is fine. **Do not merge #273 without picking one.** The client-side mitigation is in #273, so the public `/faq` announcement is no longer gated by mitigation work — but the long-term server-side proxy fix is still tracked as `KAN-LATER-2` and should be filed before any major external launch.
 
 ### Action 4 — Satellite reviews (afternoon)
 
@@ -272,7 +304,7 @@ In this order, after the `reporium-api` queue is drained:
 2. `reporium-roadmap#8` — review-by-reading, merge.
 3. `reporium-roadmap#9` — review-by-reading, merge.
 4. `reporium-audit#11` then `#12` — review against L4 RCA + L11 §7. Merge in order.
-5. Ask Workato author to push commit `81c98c7` from `claude/feature/KAN-DRAFT-workato-reporium-validation` to `claude/feature/KAN-DRAFT-workato-activation`. Then review `#1`.
+5. Ask Workato author to push commits `81c98c7` + `a5c6468` from `claude/feature/KAN-DRAFT-workato-reporium-validation` (or fast-forward `claude/feature/KAN-DRAFT-workato-activation`) to `Perditio-Labs/perditio-workato-integration`. Then review `#1`.
 6. `reporium-ingestion#67` — green and mergeable to `dev`; merge at owner's discretion.
 
 ### Action 5 — Post-wave verification
@@ -296,9 +328,9 @@ If any verification fails, halt — do not start the next merge. Escalate per `r
 ## 7. Things that absolutely must not happen
 
 - **Do not** merge `reporium-api#435`. CI is red; the fix is on a sibling branch (now #441). Memory observations claiming #435 is fixed are wrong — yesterday's lesson burned an entire re-derivation cycle on this. Verify with `git log origin/fix/health-pool-stats-354 -- app/main.py` before trusting any "it's fixed" claim.
-- **Do not** merge `reporium#272` without resolving the `CLAUDE.md` vs dispatch base-branch inconsistency. That kind of rolling drift bites the next coding lane.
-- **Do not** announce `/faq` publicly until the Ask spend-surface mitigation PR lands. The DB pool is at ceiling.
-- **Do not** push to another author's PR branch (e.g., `fix/health-pool-stats-354`). The cherry-pick path was abandoned in favor of #441; closing #435 is the right move.
+- **Do not** merge `reporium#272`. It is superseded by #273; merging #272 would land the FAQ surface without the spend-surface mitigation that #273 now carries.
+- **Do not** merge `reporium#273` without resolving the `CLAUDE.md` vs dispatch base-branch inconsistency. That kind of rolling drift bites the next coding lane.
+- **Do not** push to another author's PR branch (e.g., `fix/health-pool-stats-354`, `claude/feature/faq-page`). The cherry-pick path was abandoned in both cases; closing the superseded PR is the right move.
 - **Do not** merge `reporium-roadmap#7` (v1) when v3 is the active certification.
 - **Do not** merge `KAN-DRAFT-*` placeholder branches into default branches without a real KAN id in JIRA, *unless* the team has explicitly accepted the placeholder in the merge commit history (#440's branch is the only one this currently affects in flight).
 - **Do not** treat memory as authoritative for PR state. Always: `gh pr view` first, memory second. (Project-rule reinforcement from `project_reporium_p2_resolved_apr24.md`.)
@@ -307,24 +339,26 @@ If any verification fails, halt — do not start the next merge. Escalate per `r
 
 ## 8. Lane-by-lane status (today's dispatch)
 
-| Lane | Topic | Output expected | Output observed (2026-04-25 morning) |
-|---|---|---|---|
-| L1 | review #441 | `lane-01-pr-441-nullpool-followup-jira.md` | not yet present in `.audit/2026-04-25/` — PR is CLEAN; reviewing-by-reading `app/main.py` + `tests/test_health.py` is sufficient |
-| L2 | review #436 | `lane-02-pr-436-strip-stale-tags-jira.md` | not present; PR CLEAN |
-| L3 | review #440 | `lane-03-pr-440-admin-key-jira.md` | not present; PR CLEAN |
-| L4 | nightly graph RCA | `lane-04-nightly-graph-build-rca-jira.md` + `nightly-graph-build-rca.md` | 2026-04-24 RCA at `reporium-ingestion/.audit/2026-04-24/nightly-graph-build-root-cause.md` is still authoritative; no fresh contradiction observed |
-| L5 | #272 decision | `lane-05-pr-272-faq-decision-jira.md` | not present; 2026-04-24 `pr-272-faq-decision.md` covers the call (merge as-is, mitigation deferred) |
-| L6 | review #434 | `lane-06-pr-434-hn-mentions-jira.md` | not present; PR CLEAN |
-| L7 | review #438 | `lane-07-pr-438-library-stats-jira.md` | not present; PR CLEAN |
-| L8 | review #439 | `lane-08-pr-439-forbidden-repos-jira.md` | not present; PR CLEAN |
-| L9 | audit hardening | `lane-09-audit-hardening-jira.md` | scope memo not present; reporium-audit#12 is open with the implementation already (review-by-reading) |
-| L10 | Workato validation | `lane-10-workato-recipe-validation-jira.md` | not present; perditio-workato-integration#1 incomplete (`81c98c7` not pushed) |
-| L11 | Ask UX safety design | `lane-11-ask-ux-safety-design-jira.md` + `ask-ux-safety-design-spec.md` | 2026-04-24 memo at `reporium/.audit/2026-04-24/reporium-ask-faq-design-memo.md` carries forward |
-| L12 | roadmap reality sync | `lane-12-roadmap-reality-sync-jira.md` | 2026-04-24 `reporium-roadmap-sync-correction-jira.md` is in this branch's `.audit/2026-04-24/` (carryover); roadmap PRs #7/#8/#9 still open |
-| L13 | this memo | this file | DELIVERED |
-| L14 | close #435 as superseded | `lane-14-pr-435-superseded-jira.md` | not present; close-out command is in §6 Action 1 |
+Updated mid-morning 2026-04-25 from filesystem state across repo `.audit/2026-04-25/` directories.
 
-**Reading**: most lane-NN-jira.md drafts under `.audit/2026-04-25/` were planned but not produced in time for this cert. The DISPATCH-SHEET stop conditions (review-only, doc-only, scope-only) mean the *substantive* output for each review-lane is the corresponding PR's existing review evidence on GitHub — and live `gh pr view` is unanimous: every reporium-api review-lane PR is `CLEAN` with all checks green. Treat the absence of a per-lane jira draft as an *organizational* gap, not a *certification* gap. The memo in §6 stands without them.
+| Lane | Topic | Output (live) | Status |
+|---|---|---|---|
+| L1 | review #441 | `reporium-api/.audit/2026-04-25/health-pool-nullpool-followup-jira.md` | DELIVERED |
+| L2 | review #436 | `reporium-api/.audit/2026-04-25/strip-stale-candidate-tags-jira.md` + `strip-stale-candidate-tags-pr436-review.md` | DELIVERED |
+| L3 | review #440 | `reporium-api/.audit/2026-04-25/data-quality-admin-key-jira.md` | DELIVERED |
+| L4 | nightly graph RCA | `reporium-ingestion/.audit/2026-04-25/graph-build-root-cause-jira.md` + `graph-build-operator-checklist.md` | DELIVERED (refresh of 2026-04-24 RCA) |
+| L5 | #272 decision | `reporium/.audit/2026-04-25/faq-spend-surface-jira.md` + PR #273 itself | DELIVERED — produced replacement PR #273 |
+| L6 | review #434 | (none located in `reporium-api/.audit/2026-04-25/`) | NOT FOUND — PR is CLEAN; review-by-reading suffices |
+| L7 | review #438 | `reporium-api/.audit/2026-04-25/library-stats-corpus-wide-pr438-review.md` | DELIVERED |
+| L8 | review #439 | `reporium-api/.audit/2026-04-25/ask-gate-forbidden-repos-jira.md` | DELIVERED |
+| L9 | audit hardening | `reporium-audit/.audit/2026-04-24/reporium-audit-hardening-{jira,report}.md` (carryover) + PR #12 | DELIVERED (carryover) |
+| L10 | Workato validation | `perditio-workato-integration/.audit/2026-04-24/workato-reporium-validation*.md` (carryover) | INCOMPLETE — local commits `81c98c7` + `a5c6468` not pushed to remote |
+| L11 | Ask UX safety design | `reporium/.audit/2026-04-24/{pr-272-faq-decision,faq-spend-surface-jira}.md` (carryover) | DELIVERED (carryover) |
+| L12 | roadmap reality sync | `reporium-roadmap/.audit/2026-04-24/{release-certification-jira,release-certification-memo,roadmap-backlog-convergence-jira}.md` (carryover); roadmap PRs #7/#8/#9 still open | DELIVERED (carryover) |
+| L13 | this memo | this file (`release-certification-memo.md`) + `release-certification-jira.md` | DELIVERED |
+| L14 | close #435 as superseded | (none located; close-out command in §6 Action 1) | NOT YET EXECUTED — close command in §6 Action 1 |
+
+**Reading**: as of mid-morning, the per-lane jira drafts that were missing in the early-morning ledger have largely materialized. L6 and L14 remain organizational gaps; neither is a certification gap (PR #434 is CLEAN, and the #435 close-out is a single `gh pr close` invocation in §6 Action 1).
 
 ---
 

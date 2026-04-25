@@ -18,11 +18,11 @@
 
 **Related**:
 - `reporium-api#441`, `#440`, `#439`, `#438`, `#436`, `#435`, `#434`
-- `reporium#272`
+- `reporium#273` (supersedes `#272`)
 - `reporium-ingestion#67`
 - `reporium-audit#11`, `#12`
 - `reporium-roadmap#7`, `#8`, `#9`
-- `perditio-workato-integration#1`
+- `perditio-workato-integration#1` (org: `Perditio-Labs`, not `perditioinc`)
 - Workspace dispatch: `.audit/2026-04-25/DISPATCH-SHEET.md`
 - Yesterday's cert: `.audit/2026-04-24/release-certification-v3.md`
 - Yesterday's handoff: `.audit/2026-04-24/morning-handoff-2026-04-25.md`
@@ -34,19 +34,21 @@
 
 ## Description
 
-The 2026-04-24 wave produced 7 open `reporium-api` PRs, 1 `reporium` PR, 1 `reporium-ingestion` PR, 2 `reporium-audit` PRs, 3 `reporium-roadmap` PRs, and 1 `perditio-workato-integration` PR. This certification ledger states which are merge-ready, which need human review, which are blocked, and which are superseded — with explicit merge order, dependency reasoning, and a no-regression checklist.
+The 2026-04-24 wave produced 7 open `reporium-api` PRs, 2 `reporium` PRs (`#272` + the green replacement `#273`), 1 `reporium-ingestion` PR, 2 `reporium-audit` PRs, 3 `reporium-roadmap` PRs, and 1 `perditio-workato-integration` PR. This certification ledger states which are merge-ready, which need human review, which are blocked, and which are superseded — with explicit merge order, dependency reasoning, and a no-regression checklist.
 
-The single red `reporium-api` PR — `#435` (`/health` NullPool) — has been correctly resupplied as `#441` (`MERGEABLE/CLEAN`). Action: **close #435 as superseded; merge #441**. Do not push the fix onto #435's branch; the cherry-pick path was abandoned in favor of a clean replacement PR.
+Two supersessions are live:
+- `reporium-api#435` → `#441` (NullPool-safe `/health`). Close #435; merge #441.
+- `reporium#272` → `#273` (FAQ + client spend-surface mitigation). Close #272; merge #273.
 
 Two scheduled workflows on `main` remain red (`Nightly Graph Build`, `data-quality.yml`) — tracked, not blockers; one awaits a GCP secret rotation, the other awaits PR #440 merging.
 
 ## Acceptance criteria
 
-- [ ] All seven items in §3 of `release-certification-memo.md` (the merge queue) are merged in the order specified, with green CI between each.
+- [ ] All seven items in §3 of `release-certification-memo.md` (the `reporium-api` queue) are merged in the order specified, with green CI between each.
 - [ ] `reporium-api#435` is closed with the supersession comment (no merge).
+- [ ] `reporium#272` is closed with the supersession comment (no merge); `#273` is merged after the base-branch policy decision.
 - [ ] GCP ops rotates `reporium-db-url` and the next Nightly Graph Build run is green.
 - [ ] `data-quality.yml` next dispatch on `main` is green (or red on real thresholds, not on plumbing).
-- [ ] `reporium#272` base-branch policy is resolved before `#272` merges; public `/faq` announcement held until spend-surface mitigation lands.
 - [ ] No `KAN-DRAFT-*` placeholder branch is merged into a default branch without acknowledgement.
 - [ ] No-regression checklist (§5 of the memo) — every checkbox passes after the wave lands.
 - [ ] `release-certification-memo.md` and this jira draft are linked from the roadmap PR that lands the certification snapshot.
