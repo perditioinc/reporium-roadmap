@@ -18,7 +18,7 @@
 
 ### Working
 
-- [**reporium.com v0.7.0**](https://reporium.com) — Live (HTTP 200). Latest commit 2026-04-23 — FAQ page (PR #272 in flight), inline citation linking, jellyfish hover tooltips, security hotfix #264 took down 44 leaked private repos from library.json. Banner stickiness fix shipped. Progressive loading (owned.json + library.json) still in place. Last release tag v0.7.0.
+- [**reporium.com v0.7.0**](https://reporium.com) — Live (HTTP 200). FAQ page now in PR #273 (`feat(faq): /faq + client spend-surface mitigation (KAN-272, supersedes #272)`); PR #272 (`feat(faq): add /faq page rendering every curated Ask suggestion`) remains open but is superseded by #273 and slated for close-out before #273 merges. Inline citation linking, jellyfish hover tooltips, and security hotfix #264 (44 leaked private repos removed from library.json) all shipped earlier in the cycle. Banner stickiness fix shipped. Progressive loading (owned.json + library.json) still in place. Last release tag v0.7.0.
 - [**reporium-api v1.6.0**](https://reporium-api-573778300586.us-central1.run.app/docs) — Cloud Run, /health 200 ok (verified 2026-04-24). Live /library/full reports 1,856 repos; /graph/edges reports 1,895 total / 1,768 with embeddings. 39 alembic migrations on head (039_query_log_query_id). /intelligence/ask + smart routing + follow-up suggestion chips live. DB backend is Cloud SQL (migrated from Neon 2026-04-15). Main HEAD `58ab8cd` (#433). NullPool-safe /health pool telemetry: PR #441 (`fix(health): NullPool-safe pool telemetry on /health (#354 follow-up)`, head `3b52231`) is open with all 4 required CI checks green (Tests, Dev Tests, ask-quality-gate, migration-smoke). PR #441 is a self-contained green replacement for the earlier PR #435 whose CI went red because `NullPool` lacks `.size()`/`.checkedout()`/`.overflow()`. PR #435 remains open, superseded by #441. Last tag v1.6.0; openapi reports app version 1.1.0 — version drift between tag and FastAPI app — flagged for follow-up.
 - [**reporium-mcp**](https://github.com/perditioinc/reporium-mcp) — MCP server giving Claude/Workato direct access to the live library. 18 tools across 7 modules (search, taxonomy, intelligence, graph, quality, repos, …). HTTP bridge deployed to Cloud Run via cloudbuild.http.yaml (KAN-163). Migrated to Workload Identity Federation; deploy auth probe replaced ID-token smoke test. Main HEAD `d5b6d11`. Used by 3 Workato recipes.
 - [**reporium-ingestion v1.3.0**](https://github.com/perditioinc/reporium-ingestion) — Cloud Run Job for nightly enrichment proven end-to-end (181 repos / 0 errors on first scheduled fire). Legacy GitHub Actions enrichment cron removed (PR #65). Graph-build CI surfaces Cloud Run Job diagnostics on failure (PR #66). Main HEAD `4c5f2f3`; tag v1.3.0 at `cd9fb16`.
@@ -37,7 +37,7 @@
 
 ## Fixing Now
 
-- **Ask UX trust + safety hardening** — Lane-coordinated work across 8+ parallel lanes (2026-04-24): NullPool-safe /health (PR #441 — green, all CI pass; supersedes PR #435), stale Cloud Run candidate-tag cleanup (PR #436), library stats fix (PR #438), forbidden_repos primitive (PR #439), data-quality X-Admin-Key (PR #440), `hn_mentions_count` evaluation field (PR #434), FAQ product decision (PR #272). All seven open as of 2026-04-24 PM.
+- **Ask UX trust + safety hardening** — Lane-coordinated work across 8+ parallel lanes (2026-04-24, revalidated 2026-04-25 AM): NullPool-safe /health (PR #441 — green, all CI pass; supersedes PR #435), stale Cloud Run candidate-tag cleanup (PR #436), library stats fix (PR #438), forbidden_repos primitive (PR #439), data-quality X-Admin-Key (PR #440), `hn_mentions_count` evaluation field (PR #434), FAQ product decision (PR #273 — `feat(faq): /faq + client spend-surface mitigation (KAN-272, supersedes #272)`; PR #272 still open, slated for close-out before #273 merges).
 - **Roadmap sync (this PR)** — Update reporium-roadmap to reflect validated 2026-04-24 PM state on top of v0.8.0 + v0.8.1. NullPool /health now points at PR #441 (green replacement for #435); reporium-ingestion main HEAD corrected from `025a60b` → `4c5f2f3` (`025a60b` is the unmerged `ci/graph-build-failure-ergonomics` follow-up branch). Honest restatement of corpus targets that were missed. Adds `solved_lanes` so future runs don't re-open closed work.
 
 ---
@@ -46,7 +46,7 @@
 
 - Resolve openapi/tag version drift in reporium-api
 - Re-measure knowledge-graph edge totals after 2026-04 enrichment work
-- Land FAQ product decision (PR #272)
+- Land FAQ product decision (PR #273 — supersedes PR #272)
 - Audit suite hardening + Workato recipe validation (lanes 9–10 from today's dispatch)
 - Ask/FAQ UX safety design spec (lane 11)
 
@@ -89,11 +89,14 @@ Source of truth is `roadmap.json → solved_lanes` plus `project_reporium_p2_res
 These are kept here so the original ambition is not silently rewritten:
 
 - **Stated in v0.7.0 README (2026-03-23):** "10K repos by end of March 2026; 100K by end of April 2026."
-- **Outcome as of 2026-04-24:** Not met. Live API reports 1,856 repos. Replacement targets are pending product input.
+- **Outcome as of 2026-04-25:** Not met. Live API reports 1,856 repos. Replacement targets are pending product input.
 
 ---
 
 ## Changelog
+
+### v0.8.3-roadmap-sync-pr273 - 2026-04-25
+AM revalidation pass on top of v0.8.2. One stale claim fixed: PR #272 (`feat(faq): add /faq page rendering every curated Ask suggestion`) was superseded overnight by PR #273 (`feat(faq): /faq + client spend-surface mitigation (KAN-272, supersedes #272)`). Both PRs are still OPEN as of 2026-04-25 AM (verified via `gh pr view 272/273`); PR #273 carries the spend-surface mitigation that PR #272 lacked, and the dispatch sheet now lists #272 for close-out before #273 merges. Updated reporium evidence, fixing_now description, and Next Up FAQ line to point at #273 with #272 marked superseded. `as_of` advanced 2026-04-24 → 2026-04-25 to match the revalidation date. No application repos modified. Owned files only: `roadmap.json`, `README.md`, `REPORIUM_ROADMAP.md`, `CHANGELOG.md`, `tests/`, `.audit/2026-04-25/`.
 
 ### v0.8.2-roadmap-sync-pr441 - 2026-04-24
 Late-PM follow-up to v0.8.1. Two stale claims corrected against owned files only.
@@ -135,4 +138,4 @@ reporium.com and reporium-api first deployed.
 
 ---
 
-*Platform **v0.7.0** · Last updated: 2026-04-24 · See [CHANGELOG.md](CHANGELOG.md) for version history.*
+*Platform **v0.7.0** · Last updated: 2026-04-25 · See [CHANGELOG.md](CHANGELOG.md) for version history.*

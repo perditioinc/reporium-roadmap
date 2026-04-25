@@ -183,3 +183,70 @@ multiple open PRs in flight today).
       retained verbatim.
 - [ ] `.audit/2026-04-25/reporium-roadmap-sync-jira.md` exists (this
       file).
+
+---
+
+## v0.8.3 revision (2026-04-25 AM revalidation)
+
+**Lane:** roadmap-sync (fourth pass on this branch — v0.8.3)
+**Branch:** `claude/feature/KAN-ROADMAP-reporium-roadmap-sync` (unchanged)
+**Base / target:** `main` (unchanged)
+
+### Why this revision
+
+Lane brief 2026-04-25 AM ("Validate and continue existing
+reporium-roadmap work") plus morning revalidation observations
+(2026-04-25 02:09–02:17 PDT) flagged a single stale claim in v0.8.2:
+the FAQ work was re-scoped overnight onto **PR #273**, which supersedes
+**PR #272**.
+
+### Drift — PR #272 → PR #273 supersession
+
+v0.8.2 said in three places: "FAQ product decision (PR #272)".
+
+Reality at 2026-04-25 AM (verified via `gh pr view 272/273`, both still
+**OPEN**):
+
+- **PR #272** — `feat(faq): add /faq page rendering every curated Ask
+  suggestion`. Open. Lacked spend-surface mitigation. Slated for
+  close-out before #273 merges.
+- **PR #273** — `feat(faq): /faq + client spend-surface mitigation
+  (KAN-272, supersedes #272)`. Open. This is the FAQ work the suite
+  will land.
+
+Both PRs are still in flight (neither merged, neither closed) — the
+roadmap should call out the supersession explicitly so future runs do
+not re-open the question of which PR carries the FAQ landing.
+
+### Files touched in v0.8.3 (owned files only)
+
+- `roadmap.json` — `current_state.working[reporium].evidence` (FAQ line
+  rewritten); `fixing_now[Ask UX].description` (FAQ PR pointer); 
+  `next_up.items` (FAQ Next Up line); `as_of` advanced 2026-04-24 →
+  2026-04-25; new v0.8.3 changelog entry prepended.
+- `README.md` — corresponding rewrites: working entry, fixing_now,
+  Next Up bullet, Historical Targets outcome date, new v0.8.3 changelog
+  section, footer date.
+- `REPORIUM_ROADMAP.md` — service-map row 1, Open/In-Flight table row 4;
+  header `Last manually updated` + `Current State (as of …)` advanced;
+  NullPool gotcha "Both PRs remain open as of …" date advanced.
+- `CHANGELOG.md` — v0.8.3 entry prepended.
+- This file — v0.8.3 revision section appended (no new audit file
+  created — same lane, same owned scope, same date).
+
+No application repos modified. No code change to `generate.py`. No
+new files outside `.audit/2026-04-25/` and the four owned source
+documents.
+
+### Acceptance criteria (v0.8.3)
+
+- [ ] `roadmap.json` `as_of` is `2026-04-25`.
+- [ ] No remaining occurrences of "PR #272" without an accompanying
+      mention of #273 supersession across `roadmap.json`, `README.md`,
+      `REPORIUM_ROADMAP.md`.
+- [ ] `gh pr view 272 --json state` returns `OPEN` and
+      `gh pr view 273 --json state` returns `OPEN` at the time of merge
+      (if either has merged or closed by then, this audit should be
+      re-checked before merging the v0.8.3 commit).
+- [ ] `python -m pytest tests/test_generate.py` still green (no test
+      changes in v0.8.3).

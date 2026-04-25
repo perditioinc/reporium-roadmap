@@ -1,7 +1,7 @@
 {
   "vision": "Track every meaningful AI development tool on GitHub.",
   "version": "v0.7.0",
-  "as_of": "2026-04-24",
+  "as_of": "2026-04-25",
   "platform_metrics": {
     "total_repos_live_api": 1856,
     "total_repos_graph": 1895,
@@ -20,7 +20,7 @@
         "name": "reporium.com v0.7.0",
         "repo": "perditioinc/reporium",
         "url": "https://reporium.com",
-        "evidence": "Live (HTTP 200). Latest commit 2026-04-23 — FAQ page (PR #272 in flight), inline citation linking, jellyfish hover tooltips, security hotfix #264 took down 44 leaked private repos from library.json. Banner stickiness fix shipped. Progressive loading (owned.json + library.json) still in place. Last release tag v0.7.0."
+        "evidence": "Live (HTTP 200). FAQ page now in PR #273 (`feat(faq): /faq + client spend-surface mitigation (KAN-272, supersedes #272)`); PR #272 (`feat(faq): add /faq page rendering every curated Ask suggestion`) remains open but is superseded by #273 and slated for close-out before #273 merges. Inline citation linking, jellyfish hover tooltips, and security hotfix #264 (44 leaked private repos removed from library.json) all shipped earlier in the cycle. Banner stickiness fix shipped. Progressive loading (owned.json + library.json) still in place. Last release tag v0.7.0."
       },
       {
         "name": "reporium-api v1.6.0",
@@ -94,7 +94,7 @@
   "fixing_now": [
     {
       "name": "Ask UX trust + safety hardening",
-      "description": "Lane-coordinated work across 8+ parallel lanes (2026-04-24): NullPool-safe /health (PR #441 — green, all CI pass; supersedes PR #435), stale Cloud Run candidate-tag cleanup (PR #436), library stats fix (PR #438), forbidden_repos primitive (PR #439), data-quality X-Admin-Key fix (PR #440), `hn_mentions_count` evaluation field (PR #434), FAQ product decision (PR #272). All seven PRs were open as of 2026-04-24 PM."
+      "description": "Lane-coordinated work across 8+ parallel lanes (2026-04-24, revalidated 2026-04-25 AM): NullPool-safe /health (PR #441 — green, all CI pass; supersedes PR #435), stale Cloud Run candidate-tag cleanup (PR #436), library stats fix (PR #438), forbidden_repos primitive (PR #439), data-quality X-Admin-Key fix (PR #440), `hn_mentions_count` evaluation field (PR #434), FAQ product decision (PR #273 — `feat(faq): /faq + client spend-surface mitigation (KAN-272, supersedes #272)`; PR #272 still open, slated for close-out before #273 merges)."
     },
     {
       "name": "Roadmap sync (this PR)",
@@ -106,7 +106,7 @@
     "items": [
       "Resolve openapi/tag version drift in reporium-api",
       "Re-measure knowledge-graph edge totals after 2026-04 enrichment work",
-      "Land FAQ product decision (PR #272)",
+      "Land FAQ product decision (PR #273 — supersedes PR #272)",
       "Audit suite hardening + Workato recipe validation (lanes 9–10 from today's dispatch)",
       "Ask/FAQ UX safety design spec (lane 11)"
     ]
@@ -211,6 +211,11 @@
     }
   ],
   "changelog": [
+    {
+      "version": "v0.8.3-roadmap-sync-pr273",
+      "date": "2026-04-25",
+      "notes": "AM revalidation pass on top of v0.8.2. One stale claim fixed: PR #272 (`feat(faq): add /faq page rendering every curated Ask suggestion`) was superseded overnight by PR #273 (`feat(faq): /faq + client spend-surface mitigation (KAN-272, supersedes #272)`). Both PRs are still OPEN as of 2026-04-25 AM (verified via `gh pr view 272/273`); PR #273 carries the spend-surface mitigation that PR #272 lacked, and the dispatch sheet now lists #272 for close-out before #273 merges. Updated reporium evidence, fixing_now description, and next_up FAQ line to point at #273 with #272 marked superseded. `as_of` advanced 2026-04-24 → 2026-04-25 to match the revalidation date. No application repos modified. Owned files only: roadmap.json, README.md, REPORIUM_ROADMAP.md, CHANGELOG.md, tests, .audit/2026-04-25/."
+    },
     {
       "version": "v0.8.2-roadmap-sync-pr441",
       "date": "2026-04-24",

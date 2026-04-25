@@ -1,3 +1,39 @@
+## v0.8.3-roadmap-sync-pr273 - 2026-04-25
+
+AM revalidation pass on top of v0.8.2. One stale claim fixed.
+
+**FAQ lane — PR #272 superseded by PR #273.** v0.8.2 said "FAQ product
+decision (PR #272)" in three places (reporium evidence, fixing_now lane
+list, Next Up). Overnight (2026-04-24 → 2026-04-25), the FAQ work was
+re-scoped onto **PR #273** (`feat(faq): /faq + client spend-surface
+mitigation (KAN-272, supersedes #272)`) which carries a client-side
+spend-surface mitigation that PR #272 lacked. Both PRs are still **open**
+as of 2026-04-25 AM (verified via `gh pr view 272/273`); the dispatch
+sheet now lists PR #272 for **close-out before #273 merges**.
+
+Changes in this commit (owned files only):
+- `roadmap.json` — `current_state.working[reporium].evidence`: rewrites
+  "FAQ page (PR #272 in flight)" to point at PR #273 with #272 marked
+  superseded; `fixing_now[Ask UX].description` updated; `next_up.items`
+  FAQ line updated; `as_of` advanced 2026-04-24 → 2026-04-25; new v0.8.3
+  changelog entry prepended.
+- `README.md` — corresponding rewrites of working entry, fixing_now line,
+  Next Up bullet, and Historical Targets outcome date; new v0.8.3
+  changelog section; footer "Last updated" advanced.
+- `REPORIUM_ROADMAP.md` — service-map row 1 (reporium) and Open/In-Flight
+  table row 4 updated to reference PR #273 with #272 marked superseded;
+  `Last manually updated` and `Current State (as of …)` advanced;
+  NullPool gotcha "Both PRs remain open as of …" date advanced.
+- `CHANGELOG.md` — this entry.
+
+JIRA fallback: `.audit/2026-04-25/reporium-roadmap-sync-jira.md` already
+present from v0.8.2; the v0.8.3 delta is documented inside that file's
+revision log (no new audit file needed; same lane, same owned scope).
+
+No code change to `generate.py`; no application repos modified.
+Branch-strategy unchanged (target `main`, branch
+`claude/feature/KAN-ROADMAP-reporium-roadmap-sync`).
+
 ## v0.8.2-roadmap-sync-pr441 - 2026-04-24
 
 Late-PM follow-up to v0.8.1. Two stale claims corrected against owned files only.

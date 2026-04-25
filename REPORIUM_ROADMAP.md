@@ -2,11 +2,11 @@
 
 > **Single source of truth** for the Reporium platform suite.
 > Designed to be auto-updated via the `reporium-events` system.
-> Last manually updated: **2026-04-24**
+> Last manually updated: **2026-04-25**
 
 ---
 
-## Current State (as of 2026-04-24)
+## Current State (as of 2026-04-25)
 
 ### Platform Metrics
 
@@ -27,7 +27,7 @@
 
 | Service | Tech | Deployed | URL | Status |
 |---|---|---|---|---|
-| reporium | Next.js | Vercel | reporium.com | live, v0.7.0, FAQ in flight (PR #272) |
+| reporium | Next.js | Vercel | reporium.com | live, v0.7.0, FAQ in flight (PR #273 — supersedes PR #272) |
 | reporium-api | FastAPI | GCP Cloud Run | reporium-api-573778300586.us-central1.run.app | live, tag v1.6.0 (openapi reports 1.1.0 — **drift, follow-up**) |
 | reporium-mcp | Python | GCP Cloud Run (HTTP bridge) + stdio MCP | — | live, 18 tools, Workload Identity Federation |
 | reporium-ingestion | Python | GCP Cloud Run **Job** (nightly) | — | live, v1.3.0; legacy Actions cron removed |
@@ -63,7 +63,7 @@ Older PRs that targeted `dev` are still in flight.
 | 1 | reporium-api | PR #441 (NullPool /health, head `3b52231`) — supersedes PR #435 | open, all 4 required CI checks green; PR #435 still open but superseded |
 | 2 | reporium-api | PR #436 (stale Cloud Run candidate-tag cleanup) | review |
 | 3 | reporium-ingestion | Nightly Graph Build investigation | diagnostics added (PR #66, main HEAD `4c5f2f3`) |
-| 4 | reporium | PR #272 (FAQ page) | product/cost decision |
+| 4 | reporium | PR #273 (FAQ page + client spend-surface mitigation; KAN-272, supersedes PR #272) | open; PR #272 still open, slated for close-out before #273 merges |
 | 5 | reporium-api | PR #434 (hn_mentions_count) | review |
 | 6 | reporium-api | PR #438 (library stats fix) | review, merge-order coordinated |
 | 7 | reporium-api | PR #439 (forbidden_repos primitive) | review |
@@ -247,4 +247,4 @@ red on `NullPool`. **PR #441** (`fix(health): NullPool-safe pool telemetry on
 replacement: it includes the original telemetry plus a defensive `_pool_stats`
 helper that probes each counter with `getattr` + try/except. All 4 required CI
 checks (Tests, Dev Tests, ask-quality-gate, migration-smoke) pass on #441.
-Both PRs remain open as of 2026-04-24 PM; #435 is superseded.
+Both PRs remain open as of 2026-04-25 AM revalidation; #435 is superseded.
