@@ -26,7 +26,7 @@
         "name": "reporium-api v1.6.0",
         "repo": "perditioinc/reporium-api",
         "url": "https://reporium-api-573778300586.us-central1.run.app/docs",
-        "evidence": "Cloud Run, /health 200 ok (verified 2026-04-24). Live /library/full reports 1,856 repos; /graph/edges reports 1,895 total / 1,768 with embeddings. 39 alembic migrations on head (039_query_log_query_id). /intelligence/ask + smart routing + follow-up suggestion chips live. DB backend is Cloud SQL (migrated from Neon 2026-04-15). Main HEAD 58ab8cd (#433). NullPool-safe /health pool telemetry is in PR #435 — open, pending merge as of 2026-04-24. Last tag v1.6.0; openapi reports app version 1.1.0 — version drift between tag and FastAPI app — flagged for follow-up."
+        "evidence": "Cloud Run, /health 200 ok (verified 2026-04-24). Live /library/full reports 1,856 repos; /graph/edges reports 1,895 total / 1,768 with embeddings. 39 alembic migrations on head (039_query_log_query_id). /intelligence/ask + smart routing + follow-up suggestion chips live. DB backend is Cloud SQL (migrated from Neon 2026-04-15). Main HEAD 58ab8cd (#433). NullPool-safe /health pool telemetry: PR #441 (`fix(health): NullPool-safe pool telemetry on /health (#354 follow-up)`, head `3b52231`) is open with all 4 required CI checks green (Tests, Dev Tests, ask-quality-gate, migration-smoke); PR #441 is a self-contained green replacement for the earlier PR #435 whose CI went red because `NullPool` lacks `.size()`/`.checkedout()`/`.overflow()`. PR #435 remains open, superseded by #441. Last tag v1.6.0; openapi reports app version 1.1.0 — version drift between tag and FastAPI app — flagged for follow-up."
       },
       {
         "name": "reporium-mcp",
@@ -36,7 +36,7 @@
       {
         "name": "reporium-ingestion v1.3.0",
         "repo": "perditioinc/reporium-ingestion",
-        "evidence": "Cloud Run Job for nightly enrichment proven end-to-end (181 repos / 0 errors on first scheduled fire). Legacy GitHub Actions enrichment cron removed (PR #65). Graph-build CI surfaces Cloud Run Job diagnostics on failure (PRs #66 and follow-up). Tag v1.3.0; head 025a60b."
+        "evidence": "Cloud Run Job for nightly enrichment proven end-to-end (181 repos / 0 errors on first scheduled fire). Legacy GitHub Actions enrichment cron removed (PR #65). Graph-build CI surfaces Cloud Run Job diagnostics on failure (PR #66). Main HEAD `4c5f2f3`; tag v1.3.0 at `cd9fb16`. An unmerged follow-up branch `ci/graph-build-failure-ergonomics` (`025a60b`) further improves graph-build CI ergonomics — not on main as of 2026-04-24."
       },
       {
         "name": "forksync",
@@ -94,11 +94,11 @@
   "fixing_now": [
     {
       "name": "Ask UX trust + safety hardening",
-      "description": "Lane-coordinated work across 8+ parallel lanes (2026-04-24): NullPool-safe /health (PR #435), stale Cloud Run candidate-tag cleanup (PR #436), library stats fix (PR #438), forbidden_repos primitive (PR #439), FAQ product decision (PR #272), Data Quality Check workflow verification."
+      "description": "Lane-coordinated work across 8+ parallel lanes (2026-04-24): NullPool-safe /health (PR #441 — green, all CI pass; supersedes PR #435), stale Cloud Run candidate-tag cleanup (PR #436), library stats fix (PR #438), forbidden_repos primitive (PR #439), data-quality X-Admin-Key fix (PR #440), `hn_mentions_count` evaluation field (PR #434), FAQ product decision (PR #272). All seven PRs were open as of 2026-04-24 PM."
     },
     {
       "name": "Roadmap sync (this PR)",
-      "description": "Update reporium-roadmap to reflect validated 2026-04-24 suite state: corpus 1,406 → 1,856, Neon → Cloud SQL, reporium-mcp added as working, reporium-events now public, alembic head 004 → 039. NullPool /health softened to 'PR #435 open, pending merge'. Adds `solved_lanes` list so future runs do not re-open today's closed P2s, Neon→Cloud SQL, reporium-events, reporium-mcp, forksync, or SEC-HOTFIX #264. Original 10K/100K corpus targets acknowledged as missed."
+      "description": "Update reporium-roadmap to reflect validated 2026-04-24 PM suite state. Builds on the v0.8.0 (02:10 PDT) sync and v0.8.1 (PM correction). NullPool /health rewritten to point at PR #441 (green replacement for #435 whose CI went red on `NullPool` lacking `.size()`/etc.); reporium-ingestion main HEAD corrected from `025a60b` → `4c5f2f3` (`025a60b` is the unmerged `ci/graph-build-failure-ergonomics` follow-up branch, not on main); fixing_now lane list expanded to include PRs #434 and #440. Owned files only."
     }
   ],
   "next_up": {
@@ -211,6 +211,11 @@
     }
   ],
   "changelog": [
+    {
+      "version": "v0.8.2-roadmap-sync-pr441",
+      "date": "2026-04-24",
+      "notes": "Late-PM follow-up to v0.8.1. Two stale claims corrected against owned files only. (1) NullPool-safe /health: v0.8.0 said `PR #435 — open, pending merge`. PR #435's CI in fact went red because `NullPool` lacks `.size()`/`.checkedout()`/`.overflow()`; a self-contained green replacement was opened as PR #441 (`fix(health): NullPool-safe pool telemetry on /health (#354 follow-up)`, head `3b52231`, all 4 required CI checks green: Tests, Dev Tests, ask-quality-gate, migration-smoke). reporium-api evidence and fixing_now updated to point at #441 with #435 marked superseded but still open. (2) reporium-ingestion main HEAD: v0.8.0 evidence said `head 025a60b`. Verified main HEAD is `4c5f2f3` (#66, ci/graph-build diagnostics merge). `025a60b` is the unmerged follow-up branch `ci/graph-build-failure-ergonomics` and is *not* on main. fixing_now lane list also expanded to include PR #440 (data-quality X-Admin-Key) and PR #434 (hn_mentions_count). No code change to generate.py; owned files only (roadmap.json, README.md, REPORIUM_ROADMAP.md, CHANGELOG.md, tests, .audit/2026-04-25/)."
+    },
     {
       "version": "v0.8.1-roadmap-sync-correction",
       "date": "2026-04-24",

@@ -1,3 +1,36 @@
+## v0.8.2-roadmap-sync-pr441 - 2026-04-24
+
+Late-PM follow-up to v0.8.1. Two stale claims corrected against owned files only.
+
+1. **NullPool-safe `/health`.** v0.8.0 said `PR #435 — open, pending merge`.
+   PR #435's CI in fact went red because `NullPool` lacks `.size()`/
+   `.checkedout()`/`.overflow()`. A self-contained green replacement was opened
+   as **PR #441** (`fix(health): NullPool-safe pool telemetry on /health
+   (#354 follow-up)`, head `3b52231`, all 4 required CI checks green: Tests,
+   Dev Tests, ask-quality-gate, migration-smoke). PR #441 includes the
+   original telemetry plus a defensive `_pool_stats` helper that probes each
+   counter with `getattr` + try/except.
+   - `roadmap.json` `current_state.working[reporium-api].evidence` rewritten
+     to point at PR #441 with PR #435 marked superseded but still open.
+   - `roadmap.json` `fixing_now` Ask UX lane list updated to reference #441
+     and expanded to include PRs #434 and #440.
+   - `README.md` working entry, fixing_now, and `REPORIUM_ROADMAP.md`
+     gotchas section + Open/In-Flight table updated to match.
+2. **reporium-ingestion main HEAD.** v0.8.0 evidence said `head 025a60b`.
+   Verified main HEAD is `4c5f2f3` (#66, ci/graph-build diagnostics merge);
+   `025a60b` is the unmerged follow-up branch
+   `ci/graph-build-failure-ergonomics` and is *not* on main.
+   - `roadmap.json` `current_state.working[reporium-ingestion].evidence`
+     corrected: pins main HEAD `4c5f2f3` and tag v1.3.0 at `cd9fb16`;
+     calls out `025a60b` explicitly as an unmerged follow-up branch.
+   - `README.md` already had `4c5f2f3` (no change needed).
+
+No code change to `generate.py`; owned files only (`roadmap.json`,
+`README.md`, `REPORIUM_ROADMAP.md`, `CHANGELOG.md`, `tests/`,
+`.audit/2026-04-25/`). Branch-strategy unchanged (target `main`, branch
+`claude/feature/KAN-ROADMAP-reporium-roadmap-sync`). No application repos
+modified.
+
 ## v0.8.1-roadmap-sync-correction - 2026-04-24
 
 Same-day PM correction to v0.8.0-roadmap-sync (02:10 PDT).
