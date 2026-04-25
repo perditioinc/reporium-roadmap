@@ -60,10 +60,10 @@ Older PRs that targeted `dev` are still in flight.
 
 | Lane | Repo | PR/branch | Status |
 |---|---|---|---|
-| 1 | reporium-api | PR #441 (NullPool /health, head `3b52231`) — supersedes PR #435 | open, all 4 required CI checks green; PR #435 still open but superseded |
+| 1 | reporium-api | PR #441 (NullPool /health, head `3b52231`) — supersedes PR #435 | open, all 4 required CI checks green; PR #435 closed 2026-04-25T11:38:47Z as superseded |
 | 2 | reporium-api | PR #436 (stale Cloud Run candidate-tag cleanup) | review |
 | 3 | reporium-ingestion | Nightly Graph Build investigation | diagnostics added (PR #66, main HEAD `4c5f2f3`) |
-| 4 | reporium | PR #273 (FAQ page + client spend-surface mitigation; KAN-272, supersedes PR #272) | open; PR #272 still open, slated for close-out before #273 merges |
+| 4 | reporium | PR #273 (FAQ page + client spend-surface mitigation; KAN-272, supersedes PR #272) | open; PR #272 closed 2026-04-25T11:39:02Z as superseded — close-out completed before #273 merges |
 | 5 | reporium-api | PR #434 (hn_mentions_count) | review |
 | 6 | reporium-api | PR #438 (library stats fix) | review, merge-order coordinated |
 | 7 | reporium-api | PR #439 (forbidden_repos primitive) | review |
@@ -247,4 +247,4 @@ red on `NullPool`. **PR #441** (`fix(health): NullPool-safe pool telemetry on
 replacement: it includes the original telemetry plus a defensive `_pool_stats`
 helper that probes each counter with `getattr` + try/except. All 4 required CI
 checks (Tests, Dev Tests, ask-quality-gate, migration-smoke) pass on #441.
-Both PRs remain open as of 2026-04-25 AM revalidation; #435 is superseded.
+PR #441 remains open and green as of 2026-04-25 +6h refresh; PR #435 was closed 2026-04-25T11:38:47Z as superseded by #441.

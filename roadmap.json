@@ -20,13 +20,13 @@
         "name": "reporium.com v0.7.0",
         "repo": "perditioinc/reporium",
         "url": "https://reporium.com",
-        "evidence": "Live (HTTP 200). FAQ page now in PR #273 (`feat(faq): /faq + client spend-surface mitigation (KAN-272, supersedes #272)`); PR #272 (`feat(faq): add /faq page rendering every curated Ask suggestion`) remains open but is superseded by #273 and slated for close-out before #273 merges. Inline citation linking, jellyfish hover tooltips, and security hotfix #264 (44 leaked private repos removed from library.json) all shipped earlier in the cycle. Banner stickiness fix shipped. Progressive loading (owned.json + library.json) still in place. Last release tag v0.7.0."
+        "evidence": "Live (HTTP 200). FAQ page now in PR #273 (`feat(faq): /faq + client spend-surface mitigation (KAN-272, supersedes #272)`); PR #272 (`feat(faq): add /faq page rendering every curated Ask suggestion`) was closed 2026-04-25T11:39:02Z as superseded by #273 (close-out completed before #273 merges, as planned). Inline citation linking, jellyfish hover tooltips, and security hotfix #264 (44 leaked private repos removed from library.json) all shipped earlier in the cycle. Banner stickiness fix shipped. Progressive loading (owned.json + library.json) still in place. Last release tag v0.7.0."
       },
       {
         "name": "reporium-api v1.6.0",
         "repo": "perditioinc/reporium-api",
         "url": "https://reporium-api-573778300586.us-central1.run.app/docs",
-        "evidence": "Cloud Run, /health 200 ok (verified 2026-04-24). Live /library/full reports 1,856 repos; /graph/edges reports 1,895 total / 1,768 with embeddings. 39 alembic migrations on head (039_query_log_query_id). /intelligence/ask + smart routing + follow-up suggestion chips live. DB backend is Cloud SQL (migrated from Neon 2026-04-15). Main HEAD 58ab8cd (#433). NullPool-safe /health pool telemetry: PR #441 (`fix(health): NullPool-safe pool telemetry on /health (#354 follow-up)`, head `3b52231`) is open with all 4 required CI checks green (Tests, Dev Tests, ask-quality-gate, migration-smoke); PR #441 is a self-contained green replacement for the earlier PR #435 whose CI went red because `NullPool` lacks `.size()`/`.checkedout()`/`.overflow()`. PR #435 remains open, superseded by #441. Last tag v1.6.0; openapi reports app version 1.1.0 — version drift between tag and FastAPI app — flagged for follow-up."
+        "evidence": "Cloud Run, /health 200 ok (verified 2026-04-24). Live /library/full reports 1,856 repos; /graph/edges reports 1,895 total / 1,768 with embeddings. 39 alembic migrations on head (039_query_log_query_id). /intelligence/ask + smart routing + follow-up suggestion chips live. DB backend is Cloud SQL (migrated from Neon 2026-04-15). Main HEAD 58ab8cd (#433). NullPool-safe /health pool telemetry: PR #441 (`fix(health): NullPool-safe pool telemetry on /health (#354 follow-up)`, head `3b52231`) is open with all 4 required CI checks green (Tests, Dev Tests, ask-quality-gate, migration-smoke); PR #441 is a self-contained green replacement for the earlier PR #435 whose CI went red because `NullPool` lacks `.size()`/`.checkedout()`/`.overflow()`. PR #435 was closed 2026-04-25T11:38:47Z as superseded by #441. Last tag v1.6.0; openapi reports app version 1.1.0 — version drift between tag and FastAPI app — flagged for follow-up."
       },
       {
         "name": "reporium-mcp",
@@ -94,7 +94,7 @@
   "fixing_now": [
     {
       "name": "Ask UX trust + safety hardening",
-      "description": "Lane-coordinated work across 8+ parallel lanes (2026-04-24, revalidated 2026-04-25 AM): NullPool-safe /health (PR #441 — green, all CI pass; supersedes PR #435), stale Cloud Run candidate-tag cleanup (PR #436), library stats fix (PR #438), forbidden_repos primitive (PR #439), data-quality X-Admin-Key fix (PR #440), `hn_mentions_count` evaluation field (PR #434), FAQ product decision (PR #273 — `feat(faq): /faq + client spend-surface mitigation (KAN-272, supersedes #272)`; PR #272 still open, slated for close-out before #273 merges)."
+      "description": "Lane-coordinated work across 8+ parallel lanes (2026-04-24, revalidated 2026-04-25 AM): NullPool-safe /health (PR #441 — green, all CI pass; supersedes PR #435), stale Cloud Run candidate-tag cleanup (PR #436), library stats fix (PR #438), forbidden_repos primitive (PR #439), data-quality X-Admin-Key fix (PR #440), `hn_mentions_count` evaluation field (PR #434), FAQ product decision (PR #273 — `feat(faq): /faq + client spend-surface mitigation (KAN-272, supersedes #272)`; PR #272 closed 2026-04-25T11:39:02Z as superseded — close-out completed before #273 merges)."
     },
     {
       "name": "Roadmap sync (this PR)",
@@ -211,6 +211,11 @@
     }
   ],
   "changelog": [
+    {
+      "version": "v0.8.4-roadmap-status-plus6h-refresh",
+      "date": "2026-04-25",
+      "notes": "+6h Roadmap/Status Lane refresh. PR #272 (`feat(faq): add /faq page rendering every curated Ask suggestion`) closed 2026-04-25T11:39:02Z as superseded by #273; PR #435 (NullPool /health, `feat(health): pool stats`) closed 2026-04-25T11:38:47Z as superseded by #441. Both close-outs match the supersession disposition the v0.8.2/v0.8.3 syncs already documented — this patch only updates the status word `open`/`remains open`/`still open` to `closed <ISO>` in the three places where it appeared (reporium evidence, reporium-api evidence, fixing_now Ask UX description), plus the corresponding spots in README.md and REPORIUM_ROADMAP.md. No application repos modified. No upstream PRs merged in the +6h window. Owned files only: roadmap.json, README.md, REPORIUM_ROADMAP.md, CHANGELOG.md, .audit/2026-04-25/."
+    },
     {
       "version": "v0.8.3-roadmap-sync-pr273",
       "date": "2026-04-25",

@@ -1,3 +1,39 @@
+## v0.8.4-roadmap-status-plus6h-refresh - 2026-04-25
+
++6h Roadmap/Status Lane refresh. Two PR-status word updates only.
+
+**PR #272 closed** at 2026-04-25T11:39:02Z, superseded by PR #273. v0.8.3
+said "remains open … slated for close-out before #273 merges"; the
+close-out completed as planned. Updated reporium evidence in `roadmap.json`,
+`fixing_now[Ask UX]` Ask UX line, the `README.md` mirrors of those, and
+the Open/In-Flight row 4 in `REPORIUM_ROADMAP.md`.
+
+**PR #435 closed** at 2026-04-25T11:38:47Z, superseded by PR #441. v0.8.2
+said "PR #435 remains open, superseded by #441"; the close-out completed.
+Updated reporium-api evidence in `roadmap.json`, the `README.md` mirror,
+and the NullPool gotcha closing line in `REPORIUM_ROADMAP.md`.
+
+No application repos modified. No upstream PRs merged in the +6h window.
+No changes to `next_up`, `solved_lanes`, `not_working`, `coming_next`,
+service map, or any per-repo HEAD pin. Owned files only:
+
+- `roadmap.json` — 3 string updates (reporium evidence, reporium-api
+  evidence, fixing_now Ask UX description) + new v0.8.4 changelog entry
+  prepended.
+- `README.md` — 3 mirror string updates + new v0.8.4 changelog section
+  prepended.
+- `REPORIUM_ROADMAP.md` — Open/In-Flight rows 1 and 4, NullPool gotcha
+  closing line.
+- `CHANGELOG.md` — this entry.
+- `.audit/2026-04-25/roadmap-status-lane-jira.md` — appended +6h refresh
+  log line.
+
+JIRA fallback: `.audit/2026-04-25/roadmap-status-lane-jira.md` already
+present from the lane's earlier checkpoints; the v0.8.4 delta is documented
+in this file.
+
+---
+
 ## v0.8.3-roadmap-sync-pr273 - 2026-04-25
 
 AM revalidation pass on top of v0.8.2. One stale claim fixed.
