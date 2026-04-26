@@ -2,61 +2,72 @@
 
 > **Single source of truth** for the Reporium platform suite.
 > Designed to be auto-updated via the `reporium-events` system.
-> Last manually updated: 2026-03-24
+> Last manually updated: **2026-04-25**
 
 ---
 
-## Current State (as of 2026-03-24)
+## Current State (as of 2026-04-25)
 
 ### Platform Metrics
 
-| Metric | Value |
-|---|---|
-| Total repos tracked | 1,406 (started at 826) |
-| Enriched | 1,406 / 1,406 (100%) |
-| Embeddings | 1,406 (all-MiniLM-L6-v2, 384-dim) |
-| Knowledge graph edges | 6,209 (ALTERNATIVE_TO, COMPATIBLE_WITH, DEPENDS_ON) |
-| GitHub forks on perditioinc | ~1,444 |
-| Total enrichment cost | ~$4.50 (Claude API) |
-| Query endpoint cost | ~$0.01 / query |
+| Metric | Value | Source |
+|---|---|---|
+| Total repos (live API `/library/full`) | **1,856** | curl prod 2026-04-24 |
+| Total repos (live API `/graph/edges`) | **1,895** | curl prod 2026-04-24 |
+| Repos with embeddings | 1,768 (all-MiniLM-L6-v2, 384-dim) | curl prod 2026-04-24 |
+| Knowledge graph edge total | **needs verification** (older claim 6,209 was on 1,406-repo corpus) | — |
+| reporium-db published index.json | 1,848 repos | local clone 2026-04-22 |
+| Alembic head | `039_query_log_query_id` | `reporium-api/migrations/versions/` |
+| DB backend | **Cloud SQL** PostgreSQL + pgvector (migrated from Neon 2026-04-15) | project memory `project_neon_quota_migration.md` |
+| DB tier | f1-micro (`max_connections=25`, app `pool_size=5` + `max_overflow=2`) | same |
+| Monitoring | Sentry + 6 GCP alert policies | `project_kan120_session_apr15.md` |
+| External integrations | Workato (3 recipes), MCP (Claude Code + HTTP bridge) | `WORKATO_RECIPE_*_COMPLETE.md`, `reporium-mcp/` |
 
 ### Service Map
 
-| Service | Tech | Deployed | URL |
-|---|---|---|---|
-| reporium | Next.js | Vercel | reporium.com |
-| reporium-api | FastAPI | GCP Cloud Run | reporium-api-573778300586.us-central1.run.app |
-| reporium-ingestion | Python | Local / Manual | — |
-| reporium-db | Python | GitHub Actions (nightly) | — |
-| reporium-events | Python | Local only (NOT on GitHub) | — |
-| forksync | Python | GitHub Actions | — |
-| reporium-audit | Python | GitHub Actions (nightly 8am UTC) | — |
-| reporium-security | Python | pip-installable | — |
-| reporium-scoring | Python | pip-installable | — |
-| reporium-metrics | Python | GitHub Actions (nightly) | — |
-| reporium-dataset | Python | GitHub Actions (auto-updated) | — |
-| reporium-roadmap | Markdown | GitHub Pages | — |
-| perditio-devkit | Python | pip-installable | — |
-| reporium-system-design | Docs | — | Architecture docs only |
-
-### Git Flow
-
-```
-main        → production (protected, PR required)
-dev         → integration (default branch for PRs)
-feature/*   → new features  (PR → dev)
-fix/*       → bug fixes      (PR → dev)
-release/*   → release candidates (PR → main)
-hotfix/*    → emergency fixes  (PR → main + dev)
-```
-
-### Open Issues & PRs
-
-| # | Type | Title | Branch | Status |
+| Service | Tech | Deployed | URL | Status |
 |---|---|---|---|---|
-| #15 | Issue | Tag cloud status tags | — | Open |
-| #16 | PR | fix/tag-cloud-status-tags-15 | `fix/tag-cloud-status-tags-15` | Open → dev |
-| #17 | Issue | Taxonomy expansion (28 skill areas) | — | Open |
+| reporium | Next.js | Vercel | reporium.com | live, v0.7.0, FAQ in flight (PR #273 — supersedes PR #272) |
+| reporium-api | FastAPI | GCP Cloud Run | reporium-api-573778300586.us-central1.run.app | live, tag v1.6.0 (openapi reports 1.1.0 — **drift, follow-up**) |
+| reporium-mcp | Python | GCP Cloud Run (HTTP bridge) + stdio MCP | — | live, 18 tools, Workload Identity Federation |
+| reporium-ingestion | Python | GCP Cloud Run **Job** (nightly) | — | live, v1.3.0; legacy Actions cron removed |
+| reporium-db | Python | GitHub Actions (nightly) | — | live, v1.0.0 |
+| reporium-events | Python | GCP Pub/Sub + Firestore | — | **public on GitHub** as of 2026-04, v1.0.0 |
+| forksync | Python | GCP Cloud Run + Upstash Redis | — | live |
+| reporium-audit | Python | GitHub Actions (nightly 8am UTC) | — | live, v1.0.0 |
+| reporium-security | Python | pip-installable | — | unchanged from prior roadmap; needs verification |
+| reporium-scoring | Python | pip-installable | — | unchanged from prior roadmap; needs verification |
+| reporium-metrics | Python | GitHub Actions (nightly) | — | live (per 2026-04-09 audit pass) |
+| reporium-dataset | Python | GitHub Actions (auto-updated) | — | live |
+| reporium-roadmap | Markdown | GitHub Pages + nightly job | — | this repo |
+| perditio-devkit | Python | pip-installable | — | live |
+| reporium-system-design | Docs | — | — | docs only |
+
+### Git Flow (current dispatch contract)
+
+```
+main                              → production (protected, PR required)
+claude/feature/KAN-<id>-<lane>    → owned by a single dispatch lane (PR → main)
+fix/*                             → bug fixes  (PR → main)
+hotfix/*                          → emergency fixes  (PR → main, tagged SEC-HOTFIX where applicable)
+```
+
+The earlier `dev` integration branch is no longer the default PR target for new
+lanes; lanes PR straight to `main` per the 2026-04-23 JIRA-first workflow contract.
+Older PRs that targeted `dev` are still in flight.
+
+### Open / In-Flight (sample, not exhaustive)
+
+| Lane | Repo | PR/branch | Status |
+|---|---|---|---|
+| 1 | reporium-api | PR #441 (NullPool /health, head `3b52231`) — supersedes PR #435 | open, all 4 required CI checks green; PR #435 closed 2026-04-25T11:38:47Z as superseded |
+| 2 | reporium-api | PR #436 (stale Cloud Run candidate-tag cleanup) | review |
+| 3 | reporium-ingestion | Nightly Graph Build investigation | diagnostics added (PR #66, main HEAD `4c5f2f3`) |
+| 4 | reporium | PR #273 (FAQ page + client spend-surface mitigation; KAN-272, supersedes PR #272) | open; PR #272 closed 2026-04-25T11:39:02Z as superseded — close-out completed before #273 merges |
+| 5 | reporium-api | PR #434 (hn_mentions_count) | review |
+| 6 | reporium-api | PR #438 (library stats fix) | review, merge-order coordinated |
+| 7 | reporium-api | PR #439 (forbidden_repos primitive) | review |
+| 8 | reporium-api | Data Quality Check workflow verification | plumbing fixed; data regression tracked |
 
 ---
 
@@ -78,101 +89,89 @@ hotfix/*    → emergency fixes  (PR → main + dev)
 
 ---
 
-## Phase 2: Data Quality (IN PROGRESS — March 24–31, 2026)
+## Phase 2: Data Quality (CLOSED — March 24 → April 16, 2026)
+
+Scope from the original roadmap, with current status:
 
 ### Taxonomy Expansion (Issue #17)
-
-- [ ] Implement 28 skill areas in enrichment prompt
-- [ ] Re-enrich all 1,406 repos with new taxonomy
-- [ ] Update frontend to display 28 coverage badges
-- [ ] Curate tags: remove ~440 noise tags, keep ~200
-- [ ] Add unit tests for new taxonomy
-
-> Branch: `feature/taxonomy-expansion`
+- [x] Implement 28 skill areas in enrichment prompt
+- [x] Re-enrich repos with new taxonomy
+- [x] Update frontend coverage badges
+- [x] Curate tags
+- [x] Add unit tests for new taxonomy
 
 ### Data Backfills
-
 - [x] PM Skills + Industries backfill (390 repos)
-- [ ] Commit data backfill (1,011 repos — needs `GH_TOKEN` secret on reporium-db)
-- [ ] Fork timeline backfill (1,390 repos — script ready, needs prod run)
+- [x] Fork timeline backfill (1,390 repos — script ran)
+- [ ] Commit data backfill (1,011 repos) — **needs verification**: claim was that nightly CI would populate it; status not re-measured this cycle.
 
 ### API & Deployment
-
-- [ ] Redeploy reporium-api v1.5.0 (security fixes; blocked on `GCP_SA_KEY` secret)
-- [ ] CORS fix (`allow_origins` wildcard → restrict to `reporium.com`)
-- [ ] Set up CI/CD: push to `main` → auto-deploy Cloud Run
-- [ ] Deploy builder category + status tag filter fixes (PR #16)
+- [x] CORS restricted to `reporium.com`
+- [x] CI/CD: push to `main` → auto-deploy Cloud Run
+- [x] Deploy builder category + status tag filter fixes
+- [x] Migrate from Neon → Cloud SQL (2026-04-15)
+- [x] Sentry + 6 GCP alert policies (KAN-120, 2026-04-15)
 
 ### Events System
-
-- [ ] Push `reporium-events` to GitHub (`perditioinc/reporium-events`)
-- [ ] Wire `ingestion.completed` event into enrichment pipeline
-- [ ] Wire `repo.added` event into fork + ingest workflow
-- [ ] Wire `api.deployed` event into deploy workflow
-- [ ] Create real subscriber in reporium-api (replace stub at `platform.py:82`)
-- [ ] Create GCP Pub/Sub topic + Firestore collection via IaC
-- [ ] Auto-update this roadmap via events (metrics section)
+- [x] Push `reporium-events` to GitHub (`perditioinc/reporium-events`)
+- [ ] Wire `ingestion.completed` event into enrichment pipeline — **partial**, needs verification
+- [ ] Wire `repo.added` event into fork + ingest workflow — **partial**, needs verification
+- [ ] Wire `api.deployed` event into deploy workflow — needs verification
+- [ ] Create real subscriber in reporium-api (replace stub at `platform.py:82`) — needs verification
+- [x] Create GCP Pub/Sub topic + Firestore collection
+- [ ] Auto-update this roadmap via events — still on roadmap; nightly job now regenerates README from `roadmap.json` instead
 
 ---
 
-## Phase 3: Intelligence Layer (April 2026)
+## Phase 3: Intelligence Layer (IN PROGRESS — April 2026)
 
 ### Knowledge Graph Visualization
+- [x] 3D knowledge graph in API + frontend (KAN-119 snapshot feature; edge type colors per relationship type)
+- [ ] Re-measure knowledge graph edge totals after 2026-04 enrichment work
+- [ ] Mobile-responsive with touch gestures — needs verification
 
-- [ ] Design spider-web graph component in Google Stitch
-- [ ] Build D3.js / Three.js force-directed graph from graph edges
-- [ ] Replace tag cloud with interactive knowledge graph
-- [ ] Mobile-responsive with touch gestures
-- [ ] Parallax scrolling integration
-
-### Query Enhancement
-
-- [ ] Re-run smoke tests with expanded taxonomy
-- [ ] Improve signal scores in weak categories (MCP, RAG, doc processing)
-- [ ] Add query caching for common patterns
-- [ ] Track query metrics (latency, token usage, result quality)
+### Query Enhancement (KAN-162 / KAN-366 / Ask sprint)
+- [x] `/intelligence/ask` smart routing + follow-up suggestion chips (PR #422, #423, #431)
+- [x] Off-topic regex check deferred until after retrieval (KAN-366, PR #425)
+- [x] Conftest teardown made non-fatal — kills flaky main CI (PR #429)
+- [ ] Re-run smoke tests with expanded taxonomy + Phase 2 backfills
+- [ ] Track query metrics — partially live via `/metrics/data-quality`; admin-key-gated
 
 ### Repo Expansion
-
-- [ ] Fork + ingest remaining Perditio-specific repos (WhatsApp, tourism, fintech)
-- [ ] Fork + ingest PTR VR training repos
-- [ ] Fork + ingest Fluency scaling / precompression repos
-- [ ] Fork + ingest compression + video OCR repos
-- [ ] **Target: 2,000 repos by end of April**
+- Original "2,000 by end of April" target — current 1,856; not yet met but close.
 
 ---
 
 ## Phase 4: Platform & Scale (May 2026)
 
 ### Infrastructure
-
-- [ ] Set up staging environment for `dev` branch
-- [ ] Add Lighthouse performance baselines
-- [ ] Set up error monitoring (Sentry)
-- [ ] Document deployment runbooks
-- [ ] Mac Mini setup for local LLM enrichment (when approaching 10K repos)
+- [x] Sentry / error monitoring
+- [x] Document deployment runbooks (`.audit/2026-04-22/cutover-runbook.md`)
+- [ ] Set up staging environment for `dev` branch — superseded by direct-to-main lane workflow
+- [ ] Lighthouse performance baselines — needs verification
+- [ ] Mac Mini setup for local LLM enrichment — deferred (still under 10K repos)
 
 ### GitHub Pages Dashboard
-
-- [ ] Public roadmap visualization
-- [ ] DB metrics (repo count, category coverage, signal scores)
-- [ ] Research portfolio (all company / industry analysis)
-- [ ] Knowledge graph interactive explorer
-- [ ] Auto-updated via `reporium-events`
+- [x] Public roadmap visualization (this repo)
+- [ ] Knowledge graph interactive explorer — frontend has 3D view; standalone explorer still planned
 
 ### Cloud Credits
+- Items still on backlog; status unchanged.
 
-- [ ] Apply to Microsoft Azure for Startups ($5K instant)
-- [ ] Apply to AWS Activate Founders ($1K)
-- [ ] Reapply for Google for Startups AI credits ($350K)
-- [ ] Apply to NVIDIA Inception ($100K GPU)
-- [ ] Apply to Cloudflare for Startups ($250K)
+---
+
+## Honest restatement of corpus targets
+
+The original v0.7.0 roadmap said: **"10K repos by end of March 2026; 100K by end of April 2026."**
+As of 2026-04-24 the live API reports **1,856 repos**. Those targets were not met
+and are kept here in `historical_targets` rather than silently rewritten.
+Replacement targets are pending product input.
 
 ---
 
 ## Event-Driven Updates
 
-This document is designed to be auto-updated by `reporium-events`. When the following events fire, the metrics section should be refreshed:
+Auto-update plan (unchanged in spirit, partially implemented):
 
 | Event | Publisher | Updates |
 |---|---|---|
@@ -183,28 +182,13 @@ This document is designed to be auto-updated by `reporium-events`. When the foll
 | `repo.added` | any | Total repo count |
 | `health.check` | reporium-audit | Service health status |
 
-**Automation TODO:** Create a GitHub Action that subscribes to the `reporium-events` Pub/Sub topic (project: `perditio-platform`, topic: `reporium-events`), reads the latest metrics from Neon DB, and commits an updated `REPORIUM_ROADMAP.md` to this repo.
+The current nightly workflow re-renders `README.md` from `roadmap.json` using
+live GitHub stats; the long-term plan is for `reporium-events` to mutate
+`roadmap.json` directly.
 
 ---
 
-## Signal Scores (latest — 1,203-repo corpus)
-
-| Category | Score | Status |
-|---|---|---|
-| Observability & Monitoring | 0.697 | Strong |
-| LLM Evals & Benchmarking | 0.696 | Strong |
-| Local AI Agents | 0.642 | Strong |
-| Fine-tuning LLMs | 0.608 | Medium |
-| AI Security / Prompt Injection | 0.587 | Medium (+0.033 improved) |
-| RAG / Vector Search | 0.537 | Weak |
-| Doc Processing | 0.533 | Weak |
-| MCP / Tool-use | 0.386 | Weakest — priority target |
-
-> **Note:** Re-run smoke tests after taxonomy expansion + Phase 2 backfills to get updated scores.
-
----
-
-## Architecture Decisions
+## Architecture Decisions (additions since 2026-03-24)
 
 | # | Decision | Rationale |
 |---|---|---|
@@ -216,30 +200,51 @@ This document is designed to be auto-updated by `reporium-events`. When the foll
 | 6 | Claude API for enrichment | Quality at 900 repos; revisit at 10K+ |
 | 7 | Targeted sweeps > broad scraping | Higher signal, lower noise |
 | 8 | GCP Pub/Sub for events | Native to `perditio-platform` GCP project |
-| 9 | Git Flow branching | Multiple agents working in parallel need clear merge targets |
+| 9 | Git Flow branching → JIRA-first lane workflow | Multiple agents working in parallel; JIRA-first contract established 2026-04-23 |
 | 10 | Google Stitch + Antigravity | Design-to-code workflow, free tier |
+| 11 | **Cloud SQL over Neon** (2026-04-15) | Neon free-tier compute quota exhaustion; predictable billing on Cloud SQL f1-micro |
+| 12 | **Cloud Run Job for nightly enrichment** | Replace GitHub Actions cron; long-running, scoped IAM, observable via Cloud Run diagnostics |
+| 13 | **Workload Identity Federation for Cloud Run deploys** | Replace `GCP_SA_KEY` secret (KAN-124, reporium-mcp PR #12) |
+| 14 | **MCP HTTP bridge for Workato** | Workato can't speak stdio MCP directly; HTTP bridge runs in Cloud Run alongside the stdio server |
 
 ---
 
-## Known Security Issues
+## Known Security / Quality Issues (2026-04-24)
 
 | Severity | Location | Issue |
 |---|---|---|
-| ⚠️ Low | `intelligence.py:162` | f-string for UUIDs in SQL `IN` clause (internal IDs, low risk) |
-| ⚠️ Medium | `library_full.py` CORS | `allow_origins=["*"]` — should restrict to `reporium.com` |
-| ⚠️ Low | `platform.py` `/events/ingest` | No auth on stub endpoint, accepts arbitrary dict |
+| ⚠️ Cosmetic | reporium-api `app/main.py` | FastAPI `version="1.1.0"` while git tag is `v1.6.0` — openapi/tag drift |
+| ⚠️ Low | knowledge-graph edge total | Not measured this cycle; needs re-verification after taxonomy work |
+| ⚠️ Low | commit data backfill (1,011 repos) | Coverage not re-verified this cycle |
+| ✅ Resolved | leaked private repos in library.json | SEC-HOTFIX #264 (2026-04) — 44 leaked entries removed |
+| ✅ Resolved | Cloud SQL password in logs | Password rotation runbook prepared (`.audit/2026-04-22/password-rotation-runbook.md`) |
 
-All secrets (`.env`, API keys) are properly `.gitignore`d. Security headers, rate limiting, and private-repo filtering are all active.
+All secrets are properly `.gitignore`d. Security headers, rate limiting, and
+private-repo filtering remain active.
 
 ---
 
 ## Recurring Patterns & Gotchas
 
 **After every bulk fork/import:**
-Always follow up with `python -m ingestion fix --repos <names>` or a full `python -m ingestion run --mode full`. Bulk imports via `/ingest/repos` only write basic GitHub metadata — no tags, categories, builders, or readme summaries.
+Always follow up with `python -m ingestion fix --repos <names>` (note: comma-separated list per `e47281e`).
+Bulk imports via `/ingest/repos` only write basic GitHub metadata — no tags, categories, builders, or readme summaries.
 
 **Cache invalidation:**
-`library_full.py` has a module-level `_cache` (5-min TTL) separate from Redis. Call `invalidate_library_cache()` after ingestion to flush both.
+`library_full.py` has a module-level `_cache` (5-min TTL). Call `invalidate_library_cache()` after ingestion.
 
 **Category taxonomy:**
-All 1,127 old-taxonomy rows (Tooling, Agents, Research, etc.) have been SQL-migrated to canonical names. Do not use old names in new code.
+All 1,127 old-taxonomy rows have been SQL-migrated to canonical names.
+
+**Cloud Run deploy race (documented 2026-04-15):**
+Promotions need a stale-traffic-tag cleanup step; tracked by reporium-api PR #436.
+
+**NullPool in /health (2026-04-24):**
+`/health` pool telemetry must guard against `NullPool` (which lacks `.size()`/
+`.checkedout()`/`.overflow()`). PR #435 added the pool stats but its CI went
+red on `NullPool`. **PR #441** (`fix(health): NullPool-safe pool telemetry on
+/health (#354 follow-up)`, head `3b52231`) is the green self-contained
+replacement: it includes the original telemetry plus a defensive `_pool_stats`
+helper that probes each counter with `getattr` + try/except. All 4 required CI
+checks (Tests, Dev Tests, ask-quality-gate, migration-smoke) pass on #441.
+PR #441 remains open and green as of 2026-04-25 +6h refresh; PR #435 was closed 2026-04-25T11:38:47Z as superseded by #441.

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import httpx
 import respx
@@ -17,6 +18,8 @@ from generate import (
     build_readme,
     load_roadmap,
 )
+
+_ROADMAP_PATH = Path(__file__).resolve().parent.parent / "roadmap.json"
 
 _DB_INDEX_URL = "https://raw.githubusercontent.com/perditioinc/reporium-db/main/data/index.json"
 
@@ -279,6 +282,98 @@ async def test_count_repo_tests_returns_zero_on_missing_tests_dir():
     async with httpx.AsyncClient(timeout=15) as client:
         count = await _count_repo_tests(client, "tok", "perditioinc/reporium-db")
     assert count == 0
+
+
+# ── Live roadmap.json contract (pins 2026-04-24 sync) ───────────────────────
+#
+# These tests assert facts that the 2026-04-24 sync deliberately recorded.
+# They guard against silent regressions of the source-of-truth file.
+
+
+def _live_roadmap() -> dict:
+    return json.loads(_ROADMAP_PATH.read_text(encoding="utf-8"))
+
+
+def test_live_roadmap_as_of_is_set():
+    """roadmap.json must declare an as_of date (sync hygiene)."""
+    roadmap = _live_roadmap()
+    assert roadmap.get("as_of"), "roadmap.json must have an as_of date"
+
+
+def test_live_roadmap_includes_reporium_mcp():
+    """reporium-mcp must be in current_state.working — it is live on Cloud Run."""
+    roadmap = _live_roadmap()
+    working_repos = {item.get("repo") for item in roadmap["current_state"]["working"]}
+    assert "perditioinc/reporium-mcp" in working_repos
+
+
+def test_live_roadmap_db_backend_is_cloud_sql():
+    """DB backend must reflect the 2026-04-15 Neon → Cloud SQL migration."""
+    roadmap = _live_roadmap()
+    backend = roadmap.get("platform_metrics", {}).get("db_backend", "")
+    assert "Cloud SQL" in backend, f"expected Cloud SQL, got: {backend!r}"
+
+
+def test_live_roadmap_events_repo_marked_public():
+    """reporium-events must be in current_state.working (it was published to GitHub)."""
+    roadmap = _live_roadmap()
+    working_repos = {item.get("repo") for item in roadmap["current_state"]["working"]}
+    assert "perditioinc/reporium-events" in working_repos
+
+
+def test_live_roadmap_records_historical_targets():
+    """Original 10K/100K corpus targets must be retained as historical_targets,
+    not silently rewritten."""
+    roadmap = _live_roadmap()
+    historical = roadmap.get("historical_targets", [])
+    assert historical, "historical_targets must be non-empty after sync"
+    assert any(
+        "10K" in entry.get("claim", "") or "100K" in entry.get("claim", "")
+        for entry in historical
+    ), "original 10K/100K targets must be preserved in historical_targets"
+
+
+def test_live_roadmap_renders_via_build_readme():
+    """The live roadmap.json must render through build_readme without keyerrors."""
+    roadmap = _live_roadmap()
+    readme = build_readme(roadmap, {}, "2026-04-24")
+    assert "## Current State" in readme
+    assert "reporium-mcp" in readme
+    assert "Cloud SQL" in readme
+
+
+def test_live_roadmap_solved_lanes_present():
+    """`solved_lanes` must enumerate already-shipped lanes so future runs don't re-open them."""
+    roadmap = _live_roadmap()
+    solved = roadmap.get("solved_lanes", {}).get("entries", [])
+    assert solved, "solved_lanes.entries must be non-empty after sync"
+    lanes = {entry.get("lane", "") for entry in solved}
+    assert any("Neon" in name and "Cloud SQL" in name for name in lanes), (
+        "Neon → Cloud SQL migration must be recorded in solved_lanes"
+    )
+    assert any("conftest teardown" in name for name in lanes), (
+        "conftest teardown flake (api PR #429) must be recorded in solved_lanes"
+    )
+    for entry in solved:
+        assert entry.get("lane"), f"solved_lane missing lane name: {entry}"
+        assert entry.get("resolved_by"), f"solved_lane missing resolved_by: {entry}"
+
+
+def test_live_roadmap_reporium_api_evidence_uses_concrete_repo_count():
+    """reporium-api evidence must not contain unresolved `{db_total}` template placeholders.
+
+    The earlier sync drafts left `{db_total}` in evidence, which the nightly renderer
+    would resolve against reporium-db's count (1,848) rather than the API's (1,856).
+    """
+    roadmap = _live_roadmap()
+    api_entry = next(
+        item for item in roadmap["current_state"]["working"]
+        if item.get("repo") == "perditioinc/reporium-api"
+    )
+    evidence = api_entry.get("evidence", "")
+    assert "{db_total}" not in evidence, (
+        "reporium-api evidence must not carry unresolved {db_total} placeholder"
+    )
 
 
 @respx.mock
