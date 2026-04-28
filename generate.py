@@ -383,6 +383,47 @@ def _changelog_from_roadmap(changelog: list[dict]) -> str:
     return "\n".join(lines)
 
 
+def _solved_lanes_section(roadmap: dict) -> str:
+    """Render the 'Solved Lanes — do not re-open' section from roadmap.json:solved_lanes."""
+    solved = roadmap.get("solved_lanes", {})
+    entries = solved.get("entries", [])
+    if not entries:
+        return ""
+    note = solved.get("note", "")
+    lines = ["## Solved Lanes — do not re-open", ""]
+    if note:
+        lines.append(f"_{note}_")
+        lines.append("")
+    for entry in entries:
+        lane = entry.get("lane", "")
+        repo = entry.get("repo", "")
+        resolved_by = entry.get("resolved_by", "")
+        date = entry.get("date", "")
+        summary = entry.get("summary", "")
+        label = f"[**{lane}**](https://github.com/{repo})" if repo else f"**{lane}**"
+        lines.append(f"- {label} — resolved {date} via {resolved_by}")
+        if summary:
+            lines.append(f"  _{summary}_")
+    return "\n".join(lines)
+
+
+def _historical_targets_section(roadmap: dict) -> str:
+    """Render the 'Historical Targets' section from roadmap.json:historical_targets."""
+    targets = roadmap.get("historical_targets", [])
+    if not targets:
+        return ""
+    lines = ["## Historical Targets", ""]
+    for target in targets:
+        stated_in = target.get("stated_in", "")
+        claim = target.get("claim", "")
+        outcome_key = next((k for k in target if k.startswith("outcome_as_of")), None)
+        outcome = target.get(outcome_key, "") if outcome_key else ""
+        lines.append(f"- **{claim}** (stated in {stated_in})")
+        if outcome:
+            lines.append(f"  _{outcome}_")
+    return "\n".join(lines)
+
+
 def build_readme(roadmap: dict, stats_map: dict[str, Optional[dict]], generated_at: str) -> str:
     """Assemble the full README from roadmap data and live stats.
 
@@ -408,7 +449,13 @@ def build_readme(roadmap: dict, stats_map: dict[str, Optional[dict]], generated_
         next_up = _next_up_section(roadmap.get("next_up", {}))
         future = _future_section(roadmap.get("future", {}))
         coming = _plain_section("Coming Next", roadmap.get("coming_next", []))
+        solved = _solved_lanes_section(roadmap)
+        historical = _historical_targets_section(roadmap)
         changelog = _changelog_from_roadmap(roadmap.get("changelog", []))
+        last_updated = roadmap.get("as_of") or generated_at[:10]
+
+        solved_block = f"\n---\n\n{solved}\n" if solved else ""
+        historical_block = f"\n---\n\n{historical}\n" if historical else ""
 
         return f"""# Reporium Roadmap
 <!-- perditio-badges-start -->
@@ -440,14 +487,14 @@ def build_readme(roadmap: dict, stats_map: dict[str, Optional[dict]], generated_
 ---
 
 {coming}
-
+{solved_block}{historical_block}
 ---
 
 {changelog}
 
 ---
 
-*{version_line}Last updated: {generated_at[:10]} · See [CHANGELOG.md](CHANGELOG.md) for version history.*
+*{version_line}Last updated: {last_updated} · See [CHANGELOG.md](CHANGELOG.md) for version history.*
 """
 
     # Legacy structure (live, in_progress, coming_next, backlog)

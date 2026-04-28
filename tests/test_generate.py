@@ -394,3 +394,140 @@ async def test_count_repo_tests_skips_non_test_files():
     async with httpx.AsyncClient(timeout=15) as client:
         count = await _count_repo_tests(client, "tok", "perditioinc/reporium-db")
     assert count == 1
+
+
+# ── solved_lanes rendering ─────────────────────────────────────────────────────
+
+
+def test_solved_lanes_renders_when_present():
+    """solved_lanes.entries produce a '## Solved Lanes' block in the README."""
+    roadmap = {
+        "vision": "test",
+        "current_state": {"working": [], "not_working": []},
+        "fixing_now": [],
+        "next_up": {},
+        "future": {},
+        "coming_next": [],
+        "solved_lanes": {
+            "note": "Do not re-open these.",
+            "entries": [
+                {
+                    "lane": "conftest teardown flake",
+                    "repo": "perditioinc/reporium-api",
+                    "resolved_by": "PR #429",
+                    "date": "2026-04-24",
+                    "summary": "Teardown made non-fatal.",
+                },
+            ],
+        },
+    }
+    readme = build_readme(roadmap, {}, "2026-04-24")
+    assert "## Solved Lanes — do not re-open" in readme
+    assert "conftest teardown flake" in readme
+    assert "PR #429" in readme
+    assert "Do not re-open these." in readme
+
+
+def test_solved_lanes_omitted_when_absent():
+    """README has no solved_lanes heading when the key is not in roadmap.json."""
+    roadmap = {
+        "vision": "test",
+        "current_state": {"working": [], "not_working": []},
+        "fixing_now": [],
+        "next_up": {},
+        "future": {},
+        "coming_next": [],
+    }
+    readme = build_readme(roadmap, {}, "2026-04-24")
+    assert "## Solved Lanes" not in readme
+
+
+# ── historical_targets rendering ───────────────────────────────────────────────
+
+
+def test_historical_targets_renders_when_present():
+    """historical_targets list produces a '## Historical Targets' block."""
+    roadmap = {
+        "vision": "test",
+        "current_state": {"working": [], "not_working": []},
+        "fixing_now": [],
+        "next_up": {},
+        "future": {},
+        "coming_next": [],
+        "historical_targets": [
+            {
+                "stated_in": "v0.7.0 README (2026-03-23)",
+                "claim": "10K repos by end of March 2026",
+                "outcome_as_of_2026_04_24": "Not met. 1,856 repos.",
+            }
+        ],
+    }
+    readme = build_readme(roadmap, {}, "2026-04-24")
+    assert "## Historical Targets" in readme
+    assert "10K repos by end of March 2026" in readme
+    assert "Not met. 1,856 repos." in readme
+
+
+def test_historical_targets_omitted_when_absent():
+    """README has no historical_targets heading when the key is not in roadmap.json."""
+    roadmap = {
+        "vision": "test",
+        "current_state": {"working": [], "not_working": []},
+        "fixing_now": [],
+        "next_up": {},
+        "future": {},
+        "coming_next": [],
+    }
+    readme = build_readme(roadmap, {}, "2026-04-24")
+    assert "## Historical Targets" not in readme
+
+
+# ── changelog ordering ────────────────────────────────────────────────────────
+
+
+def test_changelog_all_entries_rendered_in_order():
+    """All changelog entries appear in the README in declared order."""
+    roadmap = {
+        "vision": "test",
+        "current_state": {"working": [], "not_working": []},
+        "fixing_now": [],
+        "next_up": {},
+        "future": {},
+        "coming_next": [],
+        "changelog": [
+            {"version": "v0.3.0", "date": "2026-03-17", "notes": "Third entry."},
+            {"version": "v0.2.0", "date": "2026-03-16", "notes": "Second entry."},
+            {"version": "v0.1.0", "date": "2026-03-14", "notes": "First entry."},
+        ],
+    }
+    readme = build_readme(roadmap, {}, "2026-04-24")
+    pos_v3 = readme.index("v0.3.0")
+    pos_v2 = readme.index("v0.2.0")
+    pos_v1 = readme.index("v0.1.0")
+    assert pos_v3 < pos_v2 < pos_v1, "changelog entries must appear in declared order"
+
+
+# ── evidence Main HEAD passthrough (regression guard) ─────────────────────────
+
+
+def test_working_evidence_main_head_survives_render():
+    """A working entry whose evidence contains 'Main HEAD abcd1234' renders verbatim."""
+    roadmap = {
+        "vision": "test",
+        "current_state": {
+            "working": [
+                {
+                    "name": "reporium-ingestion v1.3.0",
+                    "repo": "perditioinc/reporium-ingestion",
+                    "evidence": "Cloud Run Job live. Main HEAD `4c5f2f3`; tag v1.3.0.",
+                }
+            ],
+            "not_working": [],
+        },
+        "fixing_now": [],
+        "next_up": {},
+        "future": {},
+        "coming_next": [],
+    }
+    readme = build_readme(roadmap, {}, "2026-04-24")
+    assert "Main HEAD `4c5f2f3`" in readme
