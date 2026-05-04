@@ -16,17 +16,17 @@
 ### Working
 
 - [**reporium.com v0.7.0**](https://reporium.com) — Live (HTTP 200). FAQ page now in PR #273 (`feat(faq): /faq + client spend-surface mitigation (KAN-272, supersedes #272)`); PR #272 (`feat(faq): add /faq page rendering every curated Ask suggestion`) was closed 2026-04-25T11:39:02Z as superseded by #273 (close-out completed before #273 merges, as planned). Inline citation linking, jellyfish hover tooltips, and security hotfix #264 (44 leaked private repos removed from library.json) all shipped earlier in the cycle. Banner stickiness fix shipped. Progressive loading (owned.json + library.json) still in place. Last release tag v0.7.0.  
-  last commit: `2026-05-03`
+  last commit: `2026-05-04`
 - [**reporium-api v1.6.0**](https://reporium-api-573778300586.us-central1.run.app/docs) — Cloud Run, /health 200 ok (verified 2026-04-24). Live /library/full reports 1,856 repos; /graph/edges reports 1,895 total / 1,768 with embeddings. 39 alembic migrations on head (039_query_log_query_id). /intelligence/ask + smart routing + follow-up suggestion chips live. DB backend is Cloud SQL (migrated from Neon 2026-04-15). Main HEAD 58ab8cd (#433). NullPool-safe /health pool telemetry: PR #441 (`fix(health): NullPool-safe pool telemetry on /health (#354 follow-up)`, head `3b52231`) is open with all 4 required CI checks green (Tests, Dev Tests, ask-quality-gate, migration-smoke); PR #441 is a self-contained green replacement for the earlier PR #435 whose CI went red because `NullPool` lacks `.size()`/`.checkedout()`/`.overflow()`. PR #435 was closed 2026-04-25T11:38:47Z as superseded by #441. Last tag v1.6.0; openapi reports app version 1.1.0 — version drift between tag and FastAPI app — flagged for follow-up.  
-  last commit: `2026-05-03`
+  last commit: `2026-05-04`
 - [**reporium-mcp**](https://github.com/perditioinc/reporium-mcp) — MCP server giving Claude/Workato direct access to the live library. 18 tools across 7 modules (search, taxonomy, intelligence, graph, quality, repos, …). HTTP bridge deployed to Cloud Run via cloudbuild.http.yaml (KAN-163). Migrated to Workload Identity Federation; deploy auth probe replaced ID-token smoke test. Used by 3 Workato recipes.  
-  last commit: `2026-05-01`
+  last commit: `2026-05-03`
 - [**reporium-ingestion v1.3.0**](https://github.com/perditioinc/reporium-ingestion) — Cloud Run Job for nightly enrichment proven end-to-end (181 repos / 0 errors on first scheduled fire). Legacy GitHub Actions enrichment cron removed (PR #65). Graph-build CI surfaces Cloud Run Job diagnostics on failure (PR #66). Main HEAD `4c5f2f3`; tag v1.3.0 at `cd9fb16`. An unmerged follow-up branch `ci/graph-build-failure-ergonomics` (`025a60b`) further improves graph-build CI ergonomics — not on main as of 2026-04-24.  
   last commit: `2026-05-03`
 - [**forksync**](https://github.com/perditioinc/forksync) — Cloud Run nightly sync. Cache migrated from Cloud Memorystore to Upstash Redis REST API (PR #1). SYNC_REPORT.md still committed after each run.  
-  last commit: `2026-04-10`
-- [**reporium-db v1.0.0**](https://github.com/perditioinc/reporium-db) — Nightly sync. 1866 repos in published index.json across 40 languages. GraphQL 5xx resilience + correct checkpoint cursor landed on main via PR #11 (merge commit `9c0dad3`, merged 2026-04-23T04:56Z). 403 retry with 300s Retry-After cap (PR #10, `53b7c44`) live since 2026-04. Main HEAD `5816999` (build, 2026-04-24).  
   last commit: `2026-05-03`
+- [**reporium-db v1.0.0**](https://github.com/perditioinc/reporium-db) — Nightly sync. 1866 repos in published index.json across 40 languages. GraphQL 5xx resilience + correct checkpoint cursor landed on main via PR #11 (merge commit `9c0dad3`, merged 2026-04-23T04:56Z). 403 retry with 300s Retry-After cap (PR #10, `53b7c44`) live since 2026-04. Main HEAD `5816999` (build, 2026-04-24).  
+  last commit: `2026-05-04`
 - [**reporium-events v1.0.0**](https://github.com/perditioinc/reporium-events) — Now public on GitHub (was local-only as of 2026-03). GCP Pub/Sub topic 'reporium-events' live. 8 event schemas (sync.completed, db.synced, ingestion.completed, repo.added, repo.updated, health.check, build.failed, api.deployed). Async Firestore transactional fix shipped (PR #2).  
   last commit: `2026-05-03`
 - [**reporium-audit**](https://github.com/perditioinc/reporium-audit) — Nightly 8am UTC audit of all platform components, AUDIT_REPORT.md auto-generated. Knowledge graph edge count regression check added (4ddc6dd).  
