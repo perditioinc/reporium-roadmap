@@ -25,12 +25,12 @@
   last commit: `2026-05-05`
 - [**forksync**](https://github.com/perditioinc/forksync) — Cloud Run nightly sync. Cache migrated from Cloud Memorystore to Upstash Redis REST API (PR #1). SYNC_REPORT.md still committed after each run.  
   last commit: `2026-05-03`
-- [**reporium-db v1.0.0**](https://github.com/perditioinc/reporium-db) — Nightly sync. 1878 repos in published index.json across 41 languages. GraphQL 5xx resilience + correct checkpoint cursor landed on main via PR #11 (merge commit `9c0dad3`, merged 2026-04-23T04:56Z). 403 retry with 300s Retry-After cap (PR #10, `53b7c44`) live since 2026-04. Main HEAD `5816999` (build, 2026-04-24).  
-  last commit: `2026-05-06`
+- [**reporium-db v1.0.0**](https://github.com/perditioinc/reporium-db) — Nightly sync. 1881 repos in published index.json across 41 languages. GraphQL 5xx resilience + correct checkpoint cursor landed on main via PR #11 (merge commit `9c0dad3`, merged 2026-04-23T04:56Z). 403 retry with 300s Retry-After cap (PR #10, `53b7c44`) live since 2026-04. Main HEAD `5816999` (build, 2026-04-24).  
+  last commit: `2026-05-09`
 - [**reporium-events v1.0.0**](https://github.com/perditioinc/reporium-events) — Now public on GitHub (was local-only as of 2026-03). GCP Pub/Sub topic 'reporium-events' live. 8 event schemas (sync.completed, db.synced, ingestion.completed, repo.added, repo.updated, health.check, build.failed, api.deployed). Async Firestore transactional fix shipped (PR #2).  
   last commit: `2026-05-03`
 - [**reporium-audit**](https://github.com/perditioinc/reporium-audit) — Nightly 8am UTC audit of all platform components, AUDIT_REPORT.md auto-generated. Knowledge graph edge count regression check added (4ddc6dd).  
-  last commit: `2026-05-07`
+  last commit: `2026-05-08`
 - [**perditio-devkit**](https://github.com/perditioinc/perditio-devkit) — Shared tooling: badges, GitHub client, file utilities, reusable test failure workflow. Used by all suite repos.  
   last commit: `2026-03-23`
 
