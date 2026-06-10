@@ -1,4 +1,7 @@
 # Reporium Roadmap
+
+![License: MIT](https://img.shields.io/badge/license-MIT-brightgreen)
+
 <!-- perditio-badges-start -->
 [![Tests](https://github.com/perditioinc/reporium-roadmap/actions/workflows/test.yml/badge.svg)](https://github.com/perditioinc/reporium-roadmap/actions/workflows/test.yml)
 [![Nightly](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml/badge.svg)](https://github.com/perditioinc/reporium-roadmap/actions/workflows/update.yml)
