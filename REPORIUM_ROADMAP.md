@@ -60,7 +60,7 @@ Older PRs that targeted `dev` are still in flight.
 
 | Lane | Repo | PR/branch | Status |
 |---|---|---|---|
-| 1 | reporium-api | PR #435 (NullPool /health) | open on lane branch (`3b52231`); not yet on main |
+| 1 | reporium-api | PR #441 (NullPool /health, head `3b52231`) — supersedes PR #435 | open, all 4 required CI checks green; PR #435 still open but superseded |
 | 2 | reporium-api | PR #436 (stale Cloud Run candidate-tag cleanup) | review |
 | 3 | reporium-ingestion | Nightly Graph Build investigation | diagnostics added (PR #66, main HEAD `4c5f2f3`) |
 | 4 | reporium | PR #272 (FAQ page) | product/cost decision |
@@ -240,5 +240,11 @@ All 1,127 old-taxonomy rows have been SQL-migrated to canonical names.
 Promotions need a stale-traffic-tag cleanup step; tracked by reporium-api PR #436.
 
 **NullPool in /health (2026-04-24):**
-`/health` pool telemetry must guard against `NullPool` (which lacks `.size()` etc.).
-Fix is on lane branch as `3b52231` (PR #435) — open, pending merge to main as of 2026-04-24.
+`/health` pool telemetry must guard against `NullPool` (which lacks `.size()`/
+`.checkedout()`/`.overflow()`). PR #435 added the pool stats but its CI went
+red on `NullPool`. **PR #441** (`fix(health): NullPool-safe pool telemetry on
+/health (#354 follow-up)`, head `3b52231`) is the green self-contained
+replacement: it includes the original telemetry plus a defensive `_pool_stats`
+helper that probes each counter with `getattr` + try/except. All 4 required CI
+checks (Tests, Dev Tests, ask-quality-gate, migration-smoke) pass on #441.
+Both PRs remain open as of 2026-04-24 PM; #435 is superseded.

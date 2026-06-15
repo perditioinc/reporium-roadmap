@@ -19,7 +19,7 @@
 ### Working
 
 - [**reporium.com v0.7.0**](https://reporium.com) — Live (HTTP 200). Latest commit 2026-04-23 — FAQ page (PR #272 in flight), inline citation linking, jellyfish hover tooltips, security hotfix #264 took down 44 leaked private repos from library.json. Banner stickiness fix shipped. Progressive loading (owned.json + library.json) still in place. Last release tag v0.7.0.
-- [**reporium-api v1.6.0**](https://reporium-api-573778300586.us-central1.run.app/docs) — Cloud Run, /health 200 ok (verified 2026-04-24). Live /library/full reports 1,856 repos; /graph/edges reports 1,895 total / 1,768 with embeddings. 39 alembic migrations on head (039_query_log_query_id). /intelligence/ask + smart routing + follow-up suggestion chips live. DB backend is Cloud SQL (migrated from Neon 2026-04-15). Main HEAD `58ab8cd` (#433). NullPool-safe /health pool telemetry is in PR #435 — open, pending merge as of 2026-04-24. Last tag v1.6.0; openapi reports app version 1.1.0 — version drift between tag and FastAPI app — flagged for follow-up.
+- [**reporium-api v1.6.0**](https://reporium-api-573778300586.us-central1.run.app/docs) — Cloud Run, /health 200 ok (verified 2026-04-24). Live /library/full reports 1,856 repos; /graph/edges reports 1,895 total / 1,768 with embeddings. 39 alembic migrations on head (039_query_log_query_id). /intelligence/ask + smart routing + follow-up suggestion chips live. DB backend is Cloud SQL (migrated from Neon 2026-04-15). Main HEAD `58ab8cd` (#433). NullPool-safe /health pool telemetry: PR #441 (`fix(health): NullPool-safe pool telemetry on /health (#354 follow-up)`, head `3b52231`) is open with all 4 required CI checks green (Tests, Dev Tests, ask-quality-gate, migration-smoke). PR #441 is a self-contained green replacement for the earlier PR #435 whose CI went red because `NullPool` lacks `.size()`/`.checkedout()`/`.overflow()`. PR #435 remains open, superseded by #441. Last tag v1.6.0; openapi reports app version 1.1.0 — version drift between tag and FastAPI app — flagged for follow-up.
 - [**reporium-mcp**](https://github.com/perditioinc/reporium-mcp) — MCP server giving Claude/Workato direct access to the live library. 18 tools across 7 modules (search, taxonomy, intelligence, graph, quality, repos, …). HTTP bridge deployed to Cloud Run via cloudbuild.http.yaml (KAN-163). Migrated to Workload Identity Federation; deploy auth probe replaced ID-token smoke test. Main HEAD `d5b6d11`. Used by 3 Workato recipes.
 - [**reporium-ingestion v1.3.0**](https://github.com/perditioinc/reporium-ingestion) — Cloud Run Job for nightly enrichment proven end-to-end (181 repos / 0 errors on first scheduled fire). Legacy GitHub Actions enrichment cron removed (PR #65). Graph-build CI surfaces Cloud Run Job diagnostics on failure (PR #66). Main HEAD `4c5f2f3`; tag v1.3.0 at `cd9fb16`.
 - [**forksync**](https://github.com/perditioinc/forksync) — Cloud Run nightly sync. Cache migrated from Cloud Memorystore to Upstash Redis REST API (PR #1). SYNC_REPORT.md still committed after each run.
@@ -37,8 +37,8 @@
 
 ## Fixing Now
 
-- **Ask UX trust + safety hardening** — Lane-coordinated work across 8+ parallel lanes (2026-04-24): NullPool-safe /health (PR #435), stale Cloud Run candidate-tag cleanup (PR #436), library stats fix (PR #438), forbidden_repos primitive (PR #439), FAQ product decision (PR #272), Data Quality Check workflow verification.
-- **Roadmap sync (this PR)** — Update reporium-roadmap to reflect validated 2026-04-24 suite state. Honest restatement of corpus targets that were missed. Adds `solved_lanes` so future runs don't re-open closed work.
+- **Ask UX trust + safety hardening** — Lane-coordinated work across 8+ parallel lanes (2026-04-24): NullPool-safe /health (PR #441 — green, all CI pass; supersedes PR #435), stale Cloud Run candidate-tag cleanup (PR #436), library stats fix (PR #438), forbidden_repos primitive (PR #439), data-quality X-Admin-Key (PR #440), `hn_mentions_count` evaluation field (PR #434), FAQ product decision (PR #272). All seven open as of 2026-04-24 PM.
+- **Roadmap sync (this PR)** — Update reporium-roadmap to reflect validated 2026-04-24 PM state on top of v0.8.0 + v0.8.1. NullPool /health now points at PR #441 (green replacement for #435); reporium-ingestion main HEAD corrected from `025a60b` → `4c5f2f3` (`025a60b` is the unmerged `ci/graph-build-failure-ergonomics` follow-up branch). Honest restatement of corpus targets that were missed. Adds `solved_lanes` so future runs don't re-open closed work.
 
 ---
 
@@ -94,6 +94,14 @@ These are kept here so the original ambition is not silently rewritten:
 ---
 
 ## Changelog
+
+### v0.8.2-roadmap-sync-pr441 - 2026-04-24
+Late-PM follow-up to v0.8.1. Two stale claims corrected against owned files only.
+
+1. **NullPool-safe `/health`.** v0.8.0 said `PR #435 — open, pending merge`. PR #435's CI in fact went red because `NullPool` lacks `.size()`/`.checkedout()`/`.overflow()`. A self-contained green replacement was opened as PR #441 (`fix(health): NullPool-safe pool telemetry on /health (#354 follow-up)`, head `3b52231`, all 4 required CI checks green: Tests, Dev Tests, ask-quality-gate, migration-smoke). reporium-api evidence and fixing_now updated to point at #441 with #435 marked superseded but still open.
+2. **reporium-ingestion main HEAD.** v0.8.0 evidence said `head 025a60b`. Verified main HEAD is `4c5f2f3` (#66, ci/graph-build diagnostics merge); `025a60b` is the unmerged follow-up branch `ci/graph-build-failure-ergonomics` and is *not* on main.
+
+`fixing_now` lane list also expanded to include PR #440 (data-quality X-Admin-Key) and PR #434 (hn_mentions_count). No code change to `generate.py`; owned files only (`roadmap.json`, `README.md`, `REPORIUM_ROADMAP.md`, `CHANGELOG.md`, `tests/`, `.audit/2026-04-25/`).
 
 ### v0.8.1-roadmap-sync-correction - 2026-04-24
 Correction to v0.8.0-roadmap-sync (same-day, PM follow-up). The 02:10 PDT sync claimed reporium-db's GraphQL 5xx companion fix (`f3a099e`) was on a feature branch only — that was wrong by ~22 hours. PR #11 (`fix(fetcher): GraphQL 5xx resilience — 6 retries, jitter, correct checkpoint`) had already merged to main as commit `9c0dad3` on 2026-04-23T04:56Z. reporium-db evidence updated; solved_lanes entry renamed and now lists both PR #10 and PR #11 as resolved on main. Main HEAD pinned to `5816999` (build, 2026-04-24). The `Land reporium-db f3a099e ...` item has been removed from Next Up because it is already on main.
