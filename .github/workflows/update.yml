@@ -8,13 +8,24 @@ on:
 permissions:
   contents: write
 
+# Serialize nightly runs so two snapshots never race the dev->main fast-forward.
+concurrency:
+  group: nightly-roadmap-update
+  cancel-in-progress: false
+
 jobs:
   update:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      # GitFlow: all generated changes flow through dev first. main is only ever
+      # advanced by fast-forwarding it to dev (see the Publish step), so main stays
+      # an ancestor of dev and never diverges.
+      - name: Checkout dev
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: dev
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
@@ -34,11 +45,18 @@ jobs:
           git config user.name "perditio-bot"
           git config user.email "bot@perditio.com"
 
-      - name: Commit and push
+      - name: Commit snapshot to dev
         run: |
           BUILD=$(cat BUILD 2>/dev/null || echo "0")
           BUILD=$((BUILD + 1))
           echo $BUILD > BUILD
           git add README.md BUILD
-          git diff --staged --quiet || git commit -m "build($BUILD): nightly update $(date -u +%Y-%m-%d)"
-          git push
+          # [skip ci] keeps the push from re-triggering CI / this workflow (loop guard).
+          git diff --staged --quiet || git commit -m "chore(data): nightly snapshot build($BUILD) $(date -u +%Y-%m-%d) [skip ci]"
+          git push origin HEAD:dev
+
+      - name: Publish to main (fast-forward dev -> main)
+        run: |
+          # main is always an ancestor of dev because every change lands on dev first,
+          # so this push is a pure fast-forward (no --force, non-destructive).
+          git push origin HEAD:main
