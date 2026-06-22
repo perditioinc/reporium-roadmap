@@ -16,21 +16,21 @@
 ### Working
 
 - [**reporium.com v0.7.0**](https://reporium.com) — Live (HTTP 200). FAQ page now in PR #273 (`feat(faq): /faq + client spend-surface mitigation (KAN-272, supersedes #272)`); PR #272 (`feat(faq): add /faq page rendering every curated Ask suggestion`) was closed 2026-04-25T11:39:02Z as superseded by #273 (close-out completed before #273 merges, as planned). Inline citation linking, jellyfish hover tooltips, and security hotfix #264 (44 leaked private repos removed from library.json) all shipped earlier in the cycle. Banner stickiness fix shipped. Progressive loading (owned.json + library.json) still in place. Last release tag v0.7.0.  
-  last commit: `2026-06-21`
+  last commit: `2026-06-22`
 - [**reporium-api v1.6.0**](https://reporium-api-573778300586.us-central1.run.app/docs) — Cloud Run, /health 200 ok (verified 2026-04-24). Live /library/full reports 1,856 repos; /graph/edges reports 1,895 total / 1,768 with embeddings. 39 alembic migrations on head (039_query_log_query_id). /intelligence/ask + smart routing + follow-up suggestion chips live. DB backend is Cloud SQL (migrated from Neon 2026-04-15). Main HEAD 58ab8cd (#433). NullPool-safe /health pool telemetry: PR #441 (`fix(health): NullPool-safe pool telemetry on /health (#354 follow-up)`, head `3b52231`) is open with all 4 required CI checks green (Tests, Dev Tests, ask-quality-gate, migration-smoke); PR #441 is a self-contained green replacement for the earlier PR #435 whose CI went red because `NullPool` lacks `.size()`/`.checkedout()`/`.overflow()`. PR #435 was closed 2026-04-25T11:38:47Z as superseded by #441. Last tag v1.6.0; openapi reports app version 1.1.0 — version drift between tag and FastAPI app — flagged for follow-up.  
-  last commit: `2026-06-21`
+  last commit: `2026-06-22`
 - [**reporium-mcp**](https://github.com/perditioinc/reporium-mcp) — MCP server giving Claude/Workato direct access to the live library. 18 tools across 7 modules (search, taxonomy, intelligence, graph, quality, repos, …). HTTP bridge deployed to Cloud Run via cloudbuild.http.yaml (KAN-163). Migrated to Workload Identity Federation; deploy auth probe replaced ID-token smoke test. Used by 3 Workato recipes.  
-  last commit: `2026-06-21`
+  last commit: `2026-06-22`
 - [**reporium-ingestion v1.3.0**](https://github.com/perditioinc/reporium-ingestion) — Cloud Run Job for nightly enrichment proven end-to-end (181 repos / 0 errors on first scheduled fire). Legacy GitHub Actions enrichment cron removed (PR #65). Graph-build CI surfaces Cloud Run Job diagnostics on failure (PR #66). Main HEAD `4c5f2f3`; tag v1.3.0 at `cd9fb16`. An unmerged follow-up branch `ci/graph-build-failure-ergonomics` (`025a60b`) further improves graph-build CI ergonomics — not on main as of 2026-04-24.  
-  last commit: `2026-06-21`
+  last commit: `2026-06-22`
 - [**forksync**](https://github.com/perditioinc/forksync) — Cloud Run nightly sync. Cache migrated from Cloud Memorystore to Upstash Redis REST API (PR #1). SYNC_REPORT.md still committed after each run.  
   last commit: `2026-05-03`
-- [**reporium-db v1.0.0**](https://github.com/perditioinc/reporium-db) — Nightly sync. 755 repos in published index.json across 31 languages. GraphQL 5xx resilience + correct checkpoint cursor landed on main via PR #11 (merge commit `9c0dad3`, merged 2026-04-23T04:56Z). 403 retry with 300s Retry-After cap (PR #10, `53b7c44`) live since 2026-04. Main HEAD `5816999` (build, 2026-04-24).  
-  last commit: `2026-06-21`
+- [**reporium-db v1.0.0**](https://github.com/perditioinc/reporium-db) — Nightly sync. 1956 repos in published index.json across 41 languages. GraphQL 5xx resilience + correct checkpoint cursor landed on main via PR #11 (merge commit `9c0dad3`, merged 2026-04-23T04:56Z). 403 retry with 300s Retry-After cap (PR #10, `53b7c44`) live since 2026-04. Main HEAD `5816999` (build, 2026-04-24).  
+  last commit: `2026-06-22`
 - [**reporium-events v1.0.0**](https://github.com/perditioinc/reporium-events) — Now public on GitHub (was local-only as of 2026-03). GCP Pub/Sub topic 'reporium-events' live. 8 event schemas (sync.completed, db.synced, ingestion.completed, repo.added, repo.updated, health.check, build.failed, api.deployed). Async Firestore transactional fix shipped (PR #2).  
-  last commit: `2026-06-21`
+  last commit: `2026-06-22`
 - [**reporium-audit**](https://github.com/perditioinc/reporium-audit) — Nightly 8am UTC audit of all platform components, AUDIT_REPORT.md auto-generated. Knowledge graph edge count regression check added (4ddc6dd).  
-  last commit: `2026-06-21`
+  last commit: `2026-06-22`
 - [**perditio-devkit**](https://github.com/perditioinc/perditio-devkit) — Shared tooling: badges, GitHub client, file utilities, reusable test failure workflow. Used by all suite repos.
 
 ### Not Working
@@ -67,6 +67,10 @@
 
 ## Coming Next
 
+- **tag-canonicalization-layer** — Fuzzy-match AI-generated integration_tags to canonical vocabulary (~200 tags) before building COMPATIBLE_WITH edges. Prevents tag proliferation and improves edge quality.
+- **multi-signal-activity-score** — Replace single-formula activity score with log2-based components: commits velocity (max 60), star log-scale (max 15), forks log-scale (max 15), recency bonus (10). Store per-signal breakdown in activity_score_breakdown JSONB on repos table.
+- **velocity-views** — v_edge_count_by_run and v_repo_activity_trend database views for operational monitoring and regression detection. Added in migration 035.
+- **knowledge-graph-nightly-cron** — Standalone nightly cron at 08:30 UTC (90 minutes after enrichment completes) with crash resume support via RESUME_CRASHED_RUN environment flag.
 - [**reporium-scoring**](https://github.com/perditioinc/reporium-scoring) — 0-100 repo scorer: README, activity, community, CI. Pip-installable. Status: planned (no recent CI runs as of 2026-04-09 audit).
 - **github-ai-trends** — Daily GitHub trending scraper for AI repos. Feeds new repo candidates to reporium-db. Status: planned.
 - **reporium frontend v2** — Figma-designed UI: faster, cleaner, better filtering. Status: planned.
@@ -100,6 +104,19 @@ _Lanes resolved on or before 2026-04-24. Future runs MUST NOT re-propose these w
 
 - **10K repos by end of March 2026; 100K by end of April 2026** (stated in v0.7.0 README (2026-03-23))
   _Not met. Live API reports 1,856 repos. Targets recorded here so the original ambition is not silently rewritten; replacement targets are pending product input._
+
+---
+
+## Branch Strategy
+
+All Reporium suite repositories follow the same Git Flow:
+
+- **`dev`** — integration branch; all feature branches target `dev`
+- **`main`** — stable branch; `dev` is merged into `main` via **squash merge** for each release
+- Feature branches: `feature/<name>`, merged to `dev` via squash merge
+- Hotfixes: `hotfix/<name>`, merged to both `main` and `dev`
+
+This applies suite-wide: reporium, reporium-api, reporium-db, reporium-ingestion, reporium-scoring, forksync, reporium-audit, reporium-events, perditio-devkit, and this roadmap repo.
 
 ---
 
